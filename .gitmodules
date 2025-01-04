@@ -1,6 +1,6 @@
 [submodule "epymarl"]
 	path = epymarl
-	url = https://github.com/uoe-agents/epymarl.git
+	url = https://github.com/shalin-jain/epymarl.git
 [submodule "robotarium_python_simulator"]
 	path = robotarium_python_simulator
 	url = https://github.com/robotarium/robotarium_python_simulator.git
