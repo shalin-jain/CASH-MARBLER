@@ -8,6 +8,7 @@ from .scenarios.ArcticTransport.ArcticTransport import ArcticTransport
 from robotarium_gym.utilities.misc import objectview
 import os
 import yaml
+import numpy as np
 
 env_dict = {'PredatorCapturePrey': PredatorCapturePrey,
             'Warehouse': Warehouse,
@@ -42,6 +43,9 @@ class Wrapper(Env):
         # Execute the given action in the wrapped environment
         obs_n, reward_n, done_n, info_n = self.env.step(action_n)
         return tuple(obs_n), reward_n, done_n, info_n
+    
+    def seed(self, seed):
+        np.random.seed(seed)
     
     def get_action_space(self):
         return self.env.get_action_space()

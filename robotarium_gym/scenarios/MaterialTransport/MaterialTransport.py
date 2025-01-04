@@ -51,12 +51,10 @@ class MaterialTransport(BaseEnv):
         self.num_robots = self.args.n_agents
         self.agent_poses = None
 
-        #Agent agent's observation is [pos_x,pos_y,load, zone1_load, zone2_load, a1_message, a2_message, a3_message, a4_message, speed, torque] 
-        #   where speed and torque are only included if capability_aware is true
-        if self.args.capability_aware:
-            self.agent_obs_dim = 11
-        else:
-            self.agent_obs_dim = 9
+        # Calculate the updated observation dimension
+        # ego_pos_x, ego_pos_y, other_agents_pos_x * (n_agents - 1), other_agents_pos_y * (n_agents - 1)
+        # zone1_load, zone2_load, ego_torque, ego_speed, other_agents_torque * (n_agents - 1), other_agents_speed * (n_agents - 1)
+        self.agent_obs_dim = 2 + 2 * (self.num_robots - 1) + 2 + 2 + 2 * (self.num_robots - 1)
 
         self.zone1_args = copy.deepcopy(self.args.zone1)
         del self.zone1_args['distribution']   
@@ -148,14 +146,46 @@ class MaterialTransport(BaseEnv):
         return obs, [reward] * self.num_robots, [terminated]*self.num_robots, info
     
     def get_observations(self):
-        observations = [] #Each agent's individual observation
-        for a in self.agents:
-            if self.args.capability_aware:
-                observations.append([*self.agent_poses[:, a.index ][:2], a.load, \
-                                     self.zone1_load, self.zone2_load, *self.messages, a.torque, a.speed])
+        """
+        Constructs observations for all agents.
+
+        [ego_pos_x, ego_pos_y, *other_agents_pos_x, *other_agents_pos_y, zone1_load, zone2_load, 
+         ego_torque, ego_speed, *other_agents_torque, *other_agents_speed]
+        
+        if capability unaware, speeds and torques will be set to 0 trivially
+        """
+        observations = []
+        for ego_index, ego_agent in enumerate(self.agents):
+            ego_pos = self.agent_poses[:, ego_index][:2]  # Ego position (x, y)
+            other_agents_pos = [
+                self.agent_poses[:, i][:2] for i in range(self.num_robots) if i != ego_index
+            ]  # other agents' positions
+            other_agents_pos_flat = [coord for pos in other_agents_pos for coord in pos]
+
+            if self.args.capability_aware: 
+                other_agents_torque = [
+                    self.agents[i].torque for i in range(self.num_robots) if i != ego_index
+                ]  # other agents' torque
+
+                other_agents_speed = [
+                    self.agents[i].speed for i in range(self.num_robots) if i != ego_index
+                ]  # other agents' speed
             else:
-                observations.append([*self.agent_poses[:, a.index ][:2], a.load, \
-                                     self.zone1_load, self.zone2_load, *self.messages])
+                other_agents_torque = [0] * (self.num_robots - 1)
+                other_agents_speed = [0] * (self.num_robots - 1)
+
+            observation = [
+                *ego_pos,
+                *other_agents_pos_flat,
+                self.zone1_load,
+                self.zone2_load,
+                ego_agent.torque if self.args.capability_aware else 0,
+                ego_agent.speed if self.args.capability_aware else 0,
+                *other_agents_torque,
+                *other_agents_speed,
+            ]
+            observations.append(observation)
+
         return observations
 
     def get_reward(self):

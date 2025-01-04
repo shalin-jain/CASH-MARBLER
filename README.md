@@ -15,7 +15,8 @@ Team: Reza Torbati, Shubham Lohiya, Shivika Singh, Meher Nigam
 
 ## Training with EPyMARL
 1. Download and Install [EPyMARL](https://github.com/uoe-agents/epymarl). On Ubuntu 22.04, to successfully install EPyMARL, I have to: 
-    - Change line 15 in `requirements.txt` from `protobuf==3.6.1` to `protobuf`
+    - Checkout `v.1.0.0`
+    - Downgrade `pip` to 24.0
     - Downgrade `wheel` to 0.38.4
     - Downgrade `setuptools` to 65.5.0
     - Install `einops` and `torchscatter`
