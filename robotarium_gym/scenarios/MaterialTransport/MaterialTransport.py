@@ -20,7 +20,7 @@ class Agent:
         '''
         updates the goal_pose based on the agent's actions
         '''   
-        action = action // 4 #This is to account for the messages
+        # action = action // 4 #This is to account for the messages
         if self.action_id2w[action] == 'left':
                 goal_pose[0] = max( goal_pose[0] - self.speed, args.LEFT)
                 goal_pose[1] = args.UP if goal_pose[1] < args.UP else \
@@ -76,8 +76,9 @@ class MaterialTransport(BaseEnv):
         #Initializes the action and observation spaces
         actions = []
         observations = []
-        for a in self.agents:
-            actions.append(spaces.Discrete(20))
+        for _ in self.agents:
+            # actions.append(spaces.Discrete(20))
+            actions.append(spaces.Discrete(5))
             #each agent's observation is a tuple of size 3
             #the minimum observation is the left corner of the robotarium, the maximum is the righ corner
             observations.append(spaces.Box(low=-1.5, high=1.5, shape=(self.agent_obs_dim,), dtype=np.float32))
@@ -91,7 +92,7 @@ class MaterialTransport(BaseEnv):
 
     def reset(self):
         self.episode_steps = 0
-        self.messages = [0,0,0,0] 
+        # self.messages = [0,0,0,0] 
 
         #Randomly sets the load for each zone
         self.zone1_load = int(getattr(np.random, self.args.zone1['distribution'])(**self.zone1_args))
@@ -114,8 +115,8 @@ class MaterialTransport(BaseEnv):
 
         #Robotarium actions and updating agent_poses all happen here
         return_message, dist, frames = self.env.step(actions_)
-        for i in range(len(self.messages)):
-            self.messages[i] = actions_[i] % 4
+        # for i in range(len(self.messages)):
+        #     self.messages[i] = actions_[i] % 4
 
         obs = self.get_observations()
         if return_message == '':

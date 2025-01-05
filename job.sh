@@ -25,4 +25,5 @@ conda deactivate
 conda activate CASH_MARBLER
 
 # run our train command via SLURM
+# python3 src/main.py --config=qmix --env-config=gymma with env_args.time_limit=1000 capability_aware=False seed=0 env_args.key="robotarium_gym:MaterialTransport-v0"
 srun -u python -u CASH-MARBLER/epymarl/src/main.py -m --config=qmix --env-config=gymma with env_args.time_limit=1000 env_args.key='robotarium_gym:PredatorCapturePrey-v0'
