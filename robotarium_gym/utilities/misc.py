@@ -6,6 +6,8 @@ import json
 import torch
 from rps.utilities.misc import *
 import imageio
+import wandb
+from tqdm import tqdm
 
 # imports needed for logging
 import tensorflow as tf
@@ -136,41 +138,49 @@ def run_env(config, module_dir):
     obs = np.array(env.reset())
     n_agents = len(obs)
 
+    run_name = f"{config['actor_class']} {config['capability_aware']} / {config['env_class']}"
     if config.enable_logging:
-        with tf.device(config.device):
-            summarywriter = tf.summary.create_file_writer(model_config.log_path)
-        
-        with summarywriter.as_default():
-            tf.summary.text("Environment Config", config.__json__, step = 0)
-            tf.summary.text("Model Config", model_config.__json__, step = 0)
+        wandb.init(
+            team='star-lab-gt',  # W&B team name
+            project='CASH-MARBLER',
+            name=run_name,
+            config={
+                "environment_config": config.__json__,
+                "model_config": model_config.__json__,
+            },
+            dir=model_config.log_path,
+        )
 
     totalReward = []
     totalSteps = []
+    totalCollisions = []
+    totalBoundaries = []
     totalDists = np.zeros((config.episodes, n_agents))
 
     if config.save_gif:
         frames = []
 
     try:
-        for i in range(config.episodes):
+        for i in tqdm(range(config.episodes), desc="Running episodes"):
             episodeReward = 0
             episodeSteps = 0
             episodeDistTravelled = np.zeros((n_agents))
-            hs = np.array([np.zeros((model_config.hidden_dim, )) for i in range(n_agents)])
-            for j in range(config.max_episode_steps+1):      
-                if model_config.obs_agent_id: #Appends the agent id if obs_agent_id is true. TODO: support obs_last_action too
-                    obs = np.concatenate([obs,np.eye(n_agents)], axis=1)
+            hs = np.array([np.zeros((model_config.hidden_dim, )) for _ in range(n_agents)])
 
-                #Gets the q values and then the action from the q values
+            for j in range(config.max_episode_steps + 1):
+                if model_config.obs_agent_id:  # Appends the agent id if obs_agent_id is true.
+                    obs = np.concatenate([obs, np.eye(n_agents)], axis=1)
+
+                # Gets the q values and then the action from the q values
                 if 'NS' in config.actor_class:
                     q_values, hs = model(torch.Tensor(obs), torch.Tensor(hs.T))
                 else:
                     q_values, hs = model(torch.Tensor(obs), torch.Tensor(hs))
-                    
+
                 actions = np.argmax(q_values.detach().numpy(), axis=1)
 
                 obs, reward, done, info = env.step(actions)
-                
+
                 episodeDistTravelled += info['dist_travelled']
 
                 if info is not None and 'frames' in info.keys():
@@ -180,43 +190,71 @@ def run_env(config, module_dir):
                     episodeReward += reward[0]
                 else:
                     episodeReward += sum(reward)
+
                 if done[0]:
-                    episodeSteps = j+1
+                    episodeSteps = j + 1
                     break
+
             if episodeSteps == 0:
                 episodeSteps = config.max_episode_steps
-            print('Episode', i+1)
+
+            print('Episode', i + 1)
             print('Episode reward:', episodeReward)
             print('Episode steps:', episodeSteps)
             print('Episode distance travelled:', episodeDistTravelled)
-            
+
             if config.enable_logging:
-                with summarywriter.as_default():
-                    tf.summary.scalar("reward", episodeReward, i+1)
-                    tf.summary.scalar("episode_steps", episodeSteps, i+1)
-                    for agent in range(n_agents):
-                        tf.summary.scalar(f'dist_travelled_{agent+1}',\
-                                        episodeDistTravelled[agent], i+1)
-                    if "remaining" in info.keys():
-                        tf.summary.scalar("remaining", info['remaining'], i+1)
-                    if "message" in info.keys():
-                        tf.summary.text("message", info['message'], i+1)
-                    tf.summary.scalar("Average Distance", np.mean(episodeDistTravelled, axis=0), i+1)
-                    tf.summary.scalar("Sum Distance", np.sum(episodeDistTravelled, axis=0), i+1)
+                log_data = {
+                    "reward": episodeReward,
+                    "episode_steps": episodeSteps,
+                    "average_distance": np.mean(episodeDistTravelled, axis=0),
+                    "sum_distance": np.sum(episodeDistTravelled, axis=0),
+                }
+                for agent in range(n_agents):
+                    log_data[f'dist_travelled_{agent + 1}'] = episodeDistTravelled[agent]
+
+                log_data["collision"] = env.env.errors["collision"]
+                log_data["boundary"] = env.env.errors["boundary"]
+
+                wandb.log(log_data)
 
             totalReward.append(episodeReward)
             totalSteps.append(episodeSteps)
-            totalDists[i,:] = episodeDistTravelled
+            totalDists[i, :] = episodeDistTravelled
+            totalCollisions.append(env.env.errors["collision"])
+            totalBoundaries.append(env.env.errors["boundary"])
 
             if config.show_figure_frequency != -1 and config.save_gif:
-                path_gif = os.path.join(model_config.gif_path+'_episode_'+str(i+1)+'.gif')
-                imageio.mimsave(path_gif, frames, duration = 100,loop=0)
+                if i == config.episodes - 1 and config.enable_logging:  # Log the last episode's gif to wandb
+                    path_gif = os.path.join(model_config.gif_path + '_episode_' + str(i + 1) + '.gif')
+                    imageio.mimsave(path_gif, frames, duration=100, loop=0)
+                    wandb.log({"last_episode_gif": wandb.Video(path_gif, fps=10, format="gif")})
 
             obs = np.array(env.reset())
+            frames = []
+
+        # Save raw data to a pickle file
+        raw_data_path = os.path.join(model_config.log_path, "raw_data.pkl")
+        with open(raw_data_path, "wb") as f:
+            pickle.dump({
+                "totalReward": totalReward,
+                "totalSteps": totalSteps,
+                "totalCollisions": totalCollisions,
+                "totalBoundaries": totalBoundaries,
+                "totalDists": totalDists.tolist(),
+            }, f)
+
+        if config.enable_logging:
+            wandb.save(raw_data_path)
+
     except Exception as error:
         print(error)
     finally:
-        print(f'\nReward: {totalReward}, Mean: {np.mean(totalReward)}, Standard Deviation: {np.std(totalReward)}')
-        print(f'Steps: {totalSteps}, Mean: {np.mean(totalSteps)}, Standard Deviation: {np.std(totalSteps)}')
-        print(f'Distance Travelled: {totalDists}, Mean: {np.mean(totalDists, axis=0)}, Standard Deviation: {np.std(totalDists)}')
-            
+        print(f'\nReward: {np.mean(totalReward)}, Standard Deviation: {np.std(totalReward)}')
+        print(f'Steps: {np.mean(totalSteps)}, Standard Deviation: {np.std(totalSteps)}')
+        print(f'Distance Travelled: {np.mean(totalDists, axis=0)}, Standard Deviation: {np.std(totalDists)}')
+        print(f'Collisions: {np.mean(totalCollisions)}, Standard Deviation: {np.std(totalCollisions)}')
+        print(f'Boundaries: {np.mean(totalBoundaries)}, Standard Deviation: {np.std(totalBoundaries)}')
+
+        if config.enable_logging:
+            wandb.finish()
