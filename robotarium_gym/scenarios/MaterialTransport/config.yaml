@@ -36,10 +36,10 @@ gif_frequency: 29 # Frequency at which frames need to be saved for gif creation
 #Arguments needed by this scenario
 n_fast_agents: 2
 n_slow_agents: 2
-fast_step: .45
-slow_step: .15
-large_torque: 15
-small_torque: 5
+fast_step: [.4, .45, .5, .55, .6] 
+slow_step: [.1, .15, .2, .25, .3]
+large_torque: [14, 16, 18, 20, 22]
+small_torque: [4, 6, 8, 10, 12]
 unload_multiplier: .075
 load_multiplier: .025
 end_goal_width: .5
@@ -48,9 +48,9 @@ capability_aware: False #Whether or not the agents know their own capabilities. 
 zone1_radius: .35
 zone1:
   distribution: 'normal'
-  loc: 100
+  loc: 75
   scale: 10
 zone2:
   distribution: 'normal'
-  loc: 20
+  loc: 15
   scale: 4

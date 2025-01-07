@@ -69,9 +69,13 @@ class MaterialTransport(BaseEnv):
         
         self.agents = []
         for i in range(self.args.n_fast_agents):
-            self.agents.append(Agent(i, self.action_id2w, self.args.small_torque, self.args.fast_step))
+            small_torque = np.random.choice(self.args.small_torque)
+            fast_step = np.random.choice(self.args.fast_step)
+            self.agents.append(Agent(i, self.action_id2w, small_torque, fast_step))
         for i in range(self.args.n_fast_agents, self.args.n_fast_agents+self.args.n_slow_agents):
-            self.agents.append(Agent(i, self.action_id2w, self.args.large_torque, self.args.slow_step))
+            large_torque = np.random.choice(self.args.large_torque)
+            slow_step = np.random.choice(self.args.slow_step)
+            self.agents.append(Agent(i, self.action_id2w, large_torque, slow_step))
 
         #Initializes the action and observation spaces
         actions = []
@@ -98,8 +102,16 @@ class MaterialTransport(BaseEnv):
         self.zone1_load = int(getattr(np.random, self.args.zone1['distribution'])(**self.zone1_args))
         self.zone2_load = int(getattr(np.random, self.args.zone2['distribution'])(**self.zone2_args))
         
-        for a in self.agents:
-            a.load=0
+        # Reset agent capabilities
+        self.agents = []
+        for i in range(self.args.n_fast_agents):
+            small_torque = np.random.choice(self.args.small_torque)
+            fast_step = np.random.choice(self.args.fast_step)
+            self.agents.append(Agent(i, self.action_id2w, small_torque, fast_step))
+        for i in range(self.args.n_fast_agents, self.args.n_fast_agents+self.args.n_slow_agents):
+            large_torque = np.random.choice(self.args.large_torque)
+            slow_step = np.random.choice(self.args.slow_step)
+            self.agents.append(Agent(i, self.action_id2w, large_torque, slow_step))
         
         #Generate the agent locations based on the config
         width = self.args.end_goal_width
@@ -159,7 +171,7 @@ class MaterialTransport(BaseEnv):
         for ego_index, ego_agent in enumerate(self.agents):
             ego_pos = self.agent_poses[:, ego_index][:2]  # Ego position (x, y)
             other_agents_pos = [
-                self.agent_poses[:, i][:2] for i in range(self.num_robots) if i != ego_index
+                self.agent_poses[:, i][:2] - ego_pos for i in range(self.num_robots) if i != ego_index
             ]  # other agents' positions
             other_agents_pos_flat = [coord for pos in other_agents_pos for coord in pos]
 
@@ -171,9 +183,10 @@ class MaterialTransport(BaseEnv):
                 other_agents_speed = [
                     self.agents[i].speed for i in range(self.num_robots) if i != ego_index
                 ]  # other agents' speed
+
+                other_agents_cap = [cap for cap_pair in zip(other_agents_torque, other_agents_speed) for cap in cap_pair]
             else:
-                other_agents_torque = [0] * (self.num_robots - 1)
-                other_agents_speed = [0] * (self.num_robots - 1)
+                other_agents_cap = [0] * (2 * (self.num_robots - 1))
 
             observation = [
                 *ego_pos,
@@ -182,8 +195,7 @@ class MaterialTransport(BaseEnv):
                 self.zone2_load,
                 ego_agent.torque if self.args.capability_aware else 0,
                 ego_agent.speed if self.args.capability_aware else 0,
-                *other_agents_torque,
-                *other_agents_speed,
+                *other_agents_cap
             ]
             observations.append(observation)
 
