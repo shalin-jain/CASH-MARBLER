@@ -150,7 +150,7 @@ class MaterialTransport(BaseEnv):
         
         info['dist_travelled'] = dist
         if terminated:
-            print(f'Remaining: {self.zone1_load + self.zone2_load + sum(a.load for a in self.agents)} {return_message}')
+            # print(f'Remaining: {self.zone1_load + self.zone2_load + sum(a.load for a in self.agents)} {return_message}')
             info['remaining'] = self.zone1_load + self.zone2_load + sum(a.load for a in self.agents)        
  
         if self.args.save_gif:
