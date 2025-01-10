@@ -141,6 +141,7 @@ def run_env(config, module_dir):
     totalReward = []
     totalSteps = []
     totalCollisions = []
+    currCollisions = 0
     totalDists = np.zeros((config.episodes, n_agents))
 
     if config.save_gif:
@@ -183,8 +184,11 @@ def run_env(config, module_dir):
             
             episodeCollision = 0
             if "collision" in env.env.errors:
-                episodeCollision = env.env.errors["collision"]
-                totalCollisions.append(episodeCollision)
+                allCollisions = sum(env.env.errors["collision"])
+                if allCollisions > currCollisions:
+                    episodeCollision = allCollisions - currCollisions
+                    currCollisions = allCollisions
+                    print(currCollisions)
 
             # print('Episode', i+1)
             # print('Episode reward:', episodeReward)
@@ -194,6 +198,7 @@ def run_env(config, module_dir):
 
             totalReward.append(episodeReward)
             totalSteps.append(episodeSteps)
+            totalCollisions.append(episodeCollision)
             totalDists[i,:] = episodeDistTravelled
 
             if config.show_figure_frequency != -1 and config.save_gif:
@@ -207,17 +212,19 @@ def run_env(config, module_dir):
     except Exception as error:
         print(error)
     finally:
-        metrics_path = os.path.join(module_dir, config.eval_dir, f"{config.actor_class}_{config.scenario}")
-        if not os.path.exists(metrics_path):
-            os.makedirs(metrics_path)
-        metrics_path = os.path.join(metrics_path, "metrics.pkl")
-        with open(metrics_path, "wb") as f:
-            pickle.dump({
-                "totalReward": totalReward,
-                "totalSteps": totalSteps,
-                "totalCollisions": totalCollisions,
-            }, f)
+        if config.save_eval_output:
+            metrics_path = os.path.join(module_dir, config.eval_dir, f"{config.actor_class}_{config.scenario}")
+            if not os.path.exists(metrics_path):
+                os.makedirs(metrics_path)
+            metrics_path = os.path.join(metrics_path, "metrics.pkl")
+            with open(metrics_path, "wb") as f:
+                pickle.dump({
+                    "totalReward": totalReward,
+                    "totalSteps": totalSteps,
+                    "totalCollisions": totalCollisions,
+                }, f)
 
-        print(f'\nReward: {totalReward}, Mean: {np.mean(totalReward)}, Standard Deviation: {np.std(totalReward)}')
-        print(f'Steps: {totalSteps}, Mean: {np.mean(totalSteps)}, Standard Deviation: {np.std(totalSteps)}')
-        print(f'Distance Travelled: {totalDists}, Mean: {np.mean(totalDists, axis=0)}, Standard Deviation: {np.std(totalDists)}')
+        print(f'\n[Reward] Mean: {np.mean(totalReward)}, Standard Deviation: {np.std(totalReward)}')
+        print(f'[Steps] Mean: {np.mean(totalSteps)}, Standard Deviation: {np.std(totalSteps)}')
+        print(f'[Collisions] Mean: {np.mean(totalCollisions)}, Standard Deviation: {np.std(totalCollisions)}')
+        print(f'[Dist] Mean: {np.mean(totalDists, axis=0)}, Standard Deviation: {np.std(totalDists)}')
