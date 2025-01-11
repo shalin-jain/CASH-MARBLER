@@ -1,0 +1,53 @@
+Mean and Std for totalReward:
+HyperRNN: Mean = 3.8890, Std = 1.6720
+RNNEXP: Mean = 3.7678, Std = 1.8776
+RNNIMP: Mean = 3.3136, Std = 2.0766
+
+Tukey HSD results for totalReward:
+ Multiple Comparison of Means - Tukey HSD, FWER=0.05  
+======================================================
+ group1  group2 meandiff p-adj   lower   upper  reject
+------------------------------------------------------
+HyperRNN RNNEXP  -0.1212 0.3213 -0.3187  0.0764  False
+HyperRNN RNNIMP  -0.5754    0.0 -0.7729 -0.3779   True
+  RNNEXP RNNIMP  -0.4542    0.0 -0.6518 -0.2567   True
+------------------------------------------------------
+
+Pairwise p-values:
+[3.21250716e-01 2.91731084e-11 2.24763034e-07]
+
+Mean and Std for totalSteps:
+HyperRNN: Mean = 48.3240, Std = 12.5090
+RNNEXP: Mean = 47.5510, Std = 12.5690
+RNNIMP: Mean = 51.2420, Std = 13.2222
+
+Tukey HSD results for totalSteps:
+ Multiple Comparison of Means - Tukey HSD, FWER=0.05 
+=====================================================
+ group1  group2 meandiff p-adj   lower  upper  reject
+-----------------------------------------------------
+HyperRNN RNNEXP   -0.773 0.3661 -2.1129 0.5669  False
+HyperRNN RNNIMP    2.918    0.0  1.5781 4.2579   True
+  RNNEXP RNNIMP    3.691    0.0  2.3511 5.0309   True
+-----------------------------------------------------
+
+Pairwise p-values:
+[3.66119503e-01 1.04282264e-06 3.65160013e-10]
+
+Mean and Std for totalCollisions:
+HyperRNN: Mean = 0.0060, Std = 0.1413
+RNNEXP: Mean = 0.0060, Std = 0.1340
+RNNIMP: Mean = 0.0060, Std = 0.1182
+
+Tukey HSD results for totalCollisions:
+Multiple Comparison of Means - Tukey HSD, FWER=0.05 
+====================================================
+ group1  group2 meandiff p-adj  lower  upper  reject
+----------------------------------------------------
+HyperRNN RNNEXP      0.0   1.0 -0.0138 0.0138  False
+HyperRNN RNNIMP      0.0   1.0 -0.0138 0.0138  False
+  RNNEXP RNNIMP      0.0   1.0 -0.0138 0.0138  False
+----------------------------------------------------
+
+Pairwise p-values:
+[1. 1. 1.]
