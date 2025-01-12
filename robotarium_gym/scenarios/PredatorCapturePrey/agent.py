@@ -42,7 +42,7 @@ class Agent:
         if self.capability_aware:
             observation = np.array([*state_space['poses'][:, self.index ][:2], *prey_loc, self.sensing_radius, self.capture_radius])
         else:
-            observation = np.array([*state_space['poses'][:, self.index ][:2], *prey_loc])
+            observation = np.array([*state_space['poses'][:, self.index ][:2], *prey_loc, 0, 0])
         return observation
     
     def generate_goal(self, goal_pose, action, args):

@@ -29,19 +29,22 @@ class PredatorCapturePrey(BaseEnv):
         
         self.action_id2w = {0: 'left', 1: 'right', 2: 'up', 3:'down', 4:'no_action'}
 
-        if self.args.capability_aware:
-            self.agent_obs_dim = 6
-        else:
-            self.agent_obs_dim = 4
+        # if self.args.capability_aware:
+        #     self.agent_obs_dim = 6
+        # else:
+        #     self.agent_obs_dim = 4
+        self.agent_obs_dim = 6
 
         #Initializes the agents
         self.agents = []
         # Initialize predator agents
         for i in range(self.num_predators):
-            self.agents.append( Agent(i, args.predator_radius, 0, self.action_id2w, self.args.capability_aware) )
+            predator_radius = np.random.choice(args.predator_radius)
+            self.agents.append( Agent(i, predator_radius, 0, self.action_id2w, self.args.capability_aware) )
         # Initialize capture agents
         for i in range(self.num_capture):
-            self.agents.append( Agent(i + self.args.predator, 0, args.capture_radius, self.action_id2w, self.args.capability_aware) )
+            capture_radius = np.random.choice(args.capture_radius)
+            self.agents.append( Agent(i + self.args.predator, 0, capture_radius, self.action_id2w, self.args.capability_aware) )
 
         #initializes the actions and observation spaces
         actions = []
@@ -117,7 +120,18 @@ class PredatorCapturePrey(BaseEnv):
         '''
         self.episode_steps = 0
         self.prey_locs = []
-        self.num_prey = self.args.num_prey      
+        self.num_prey = self.args.num_prey    
+
+        # Resample agent capabilities
+        self.agents = []
+        # Initialize predator agents
+        for i in range(self.num_predators):
+            predator_radius = np.random.choice(self.args.predator_radius)
+            self.agents.append( Agent(i, predator_radius, 0, self.action_id2w, self.args.capability_aware) )
+        # Initialize capture agents
+        for i in range(self.num_capture):
+            capture_radius = np.random.choice(self.args.capture_radius)
+            self.agents.append( Agent(i + self.args.predator, 0, capture_radius, self.action_id2w, self.args.capability_aware) )  
         
         # Agent locations
         width = self.args.ROBOT_INIT_RIGHT_THRESH - self.args.LEFT
@@ -168,7 +182,8 @@ class PredatorCapturePrey(BaseEnv):
 
         info['dist_travelled'] = dist
         if terminated:
-            print(f"Remaining prey: {updated_state['num_prey']} {return_message}")   
+            pass
+            # print(f"Remaining prey: {updated_state['num_prey']} {return_message}")   
         
         if self.args.save_gif:
             info['frames'] = frames
@@ -188,8 +203,11 @@ class PredatorCapturePrey(BaseEnv):
         # iterate over all agents and store the observations for each in a dictionary
         # dictionary uses agent index as key
         observations = {}
-        for agent in self.agents: 
-            observations[agent.index] = agent.get_observation(state_space, self.agents)    
+        capabilities = {}
+        for agent in self.agents:
+            full_obs = agent.get_observation(state_space, self.agents) 
+            observations[agent.index] = full_obs[:-2]
+            capabilities[agent.index] = full_obs[-2:]    
         
         full_observations = []
         for i, agent in enumerate(self.agents):
@@ -199,10 +217,19 @@ class PredatorCapturePrey(BaseEnv):
                 nbr_indices = [i for i in range(self.num_robots) if i != agent.index]
             else:
                 nbr_indices = get_nearest_neighbors(state_space['poses'], agent.index, self.args.num_neighbors)
+
+            # construct capability vector
+            cap = capabilities[agent.index]
+            nbr_cap = []
+            for nbr in nbr_indices:
+                nbr_cap.extend(capabilities[nbr])
+            cap = np.concatenate((cap, nbr_cap))
             
             # full_observation[i] is of dimension [NUM_NBRS, OBS_DIM]
             for nbr_index in nbr_indices:
                 full_observations[i] = np.concatenate( (full_observations[i],observations[nbr_index]) )
+            full_observations[i] = np.concatenate( (full_observations[i], cap) )
+
         # dimension [NUM_AGENTS, NUM_NBRS, OBS_DIM]
         return full_observations
 
