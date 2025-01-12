@@ -1,3 +1,8 @@
+"""
+Adapted from kfu02's script: https://github.com/kfu02/JaxMARL/tree/plotting
+"""
+
+
 import wandb
 import numpy as np
 import pandas as pd

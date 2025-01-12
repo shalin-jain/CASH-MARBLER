@@ -142,7 +142,9 @@ def run_env(config, module_dir):
     totalReward = []
     totalSteps = []
     totalCollisions = []
+    totalBoundary = []
     currCollisions = 0
+    currBoundary = 0
     totalDists = np.zeros((config.episodes, n_agents))
 
     if config.save_gif:
@@ -183,6 +185,10 @@ def run_env(config, module_dir):
                         allCollisions = sum(env.env.errors["collision"])
                         if allCollisions > currCollisions:
                             episodeSteps = config.max_episode_steps
+                    if "boundary" in env.env.errors:
+                        allBoundary = sum(env.env.errors["boundary"])
+                        if allBoundary > currBoundary:
+                            episodeSteps = config.max_episode_steps
                     break
             if episodeSteps == 0:
                 episodeSteps = config.max_episode_steps
@@ -193,7 +199,13 @@ def run_env(config, module_dir):
                 if allCollisions > currCollisions:
                     episodeCollision = allCollisions - currCollisions
                     currCollisions = allCollisions
-                    print(currCollisions)
+                    # print(currCollisions)
+            if "boundary" in env.env.errors:
+                allBoundary = sum(env.env.errors["boundary"])
+                if allBoundary > currBoundary:
+                    episodeBoundary = allBoundary - currBoundary
+                    currBoundary = allBoundary
+                    # print(currBoundary)
 
             # print('Episode', i+1)
             # print('Episode reward:', episodeReward)
@@ -204,6 +216,7 @@ def run_env(config, module_dir):
             totalReward.append(episodeReward)
             totalSteps.append(episodeSteps)
             totalCollisions.append(episodeCollision)
+            totalBoundary.append(episodeBoundary)
             totalDists[i,:] = episodeDistTravelled
 
             if config.show_figure_frequency != -1 and config.save_gif:
@@ -227,9 +240,11 @@ def run_env(config, module_dir):
                     "totalReward": totalReward,
                     "totalSteps": totalSteps,
                     "totalCollisions": totalCollisions,
+                    "totalBoundary": totalBoundary,
                 }, f)
 
         print(f'\n[Reward] Mean: {np.mean(totalReward)}, Standard Deviation: {np.std(totalReward)}')
         print(f'[Steps] Mean: {np.mean(totalSteps)}, Standard Deviation: {np.std(totalSteps)}')
         print(f'[Collisions] Mean: {np.mean(totalCollisions)}, Standard Deviation: {np.std(totalCollisions)}')
+        print(f'[Boundary] Mean: {np.mean(totalBoundary)}, Standard Deviation: {np.std(totalBoundary)}')
         print(f'[Dist] Mean: {np.mean(totalDists, axis=0)}, Standard Deviation: {np.std(totalDists)}')

@@ -160,9 +160,9 @@ class MaterialTransport(BaseEnv):
             for i in range(self.args.num_robots):
                 self.agents[i].speed = self.agents[i].speed * self.args.decay_rate
         
-        if self.args.motor_failure:
+        if self.args.motor_failure and self.episode_steps == self.args.max_episode_steps // 2:
             i = np.random.randint(0, self.num_robots)
-            self.agents[i].speed = self.agents[i].speed * 0.5
+            self.agents[i].speed = self.agents[i].speed * 0.25
 
         return obs, [reward] * self.num_robots, [terminated]*self.num_robots, info
     
