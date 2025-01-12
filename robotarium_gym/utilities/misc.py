@@ -90,6 +90,7 @@ def load_env_and_model(args, module_dir):
     
     model_config.n_agents = args.n_agents
     model = actor(input_dim, model_config)
+    print("num_params: ", sum(p.numel() for p in model.parameters()))
     model.load_state_dict(model_weights)
 
     if module_dir == "":
@@ -178,6 +179,10 @@ def run_env(config, module_dir):
                     episodeReward += sum(reward)
                 if done[0]:
                     episodeSteps = j+1
+                    if "collision" in env.env.errors:
+                        allCollisions = sum(env.env.errors["collision"])
+                        if allCollisions > currCollisions:
+                            episodeSteps = config.max_episode_steps
                     break
             if episodeSteps == 0:
                 episodeSteps = config.max_episode_steps

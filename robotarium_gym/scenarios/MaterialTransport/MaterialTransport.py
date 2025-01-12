@@ -156,6 +156,14 @@ class MaterialTransport(BaseEnv):
         if self.args.save_gif:
             info['frames'] = frames
 
+        if self.args.power_decay:
+            for i in range(self.args.num_robots):
+                self.agents[i].speed = self.agents[i].speed * self.args.decay_rate
+        
+        if self.args.motor_failure:
+            i = np.random.randint(0, self.num_robots)
+            self.agents[i].speed = self.agents[i].speed * 0.5
+
         return obs, [reward] * self.num_robots, [terminated]*self.num_robots, info
     
     def get_observations(self):
