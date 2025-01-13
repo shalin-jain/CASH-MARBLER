@@ -194,6 +194,7 @@ def run_env(config, module_dir):
                 episodeSteps = config.max_episode_steps
             
             episodeCollision = 0
+            episodeBoundary = 0
             if "collision" in env.env.errors:
                 allCollisions = sum(env.env.errors["collision"])
                 if allCollisions > currCollisions:

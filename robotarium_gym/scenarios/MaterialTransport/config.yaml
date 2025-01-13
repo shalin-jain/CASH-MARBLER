@@ -1,9 +1,9 @@
 #Arguments needed to create proper paths to everything
 scenario: MaterialTransport #name of the folder inside scenarios
-model_config_file: qmix_rnn.json #The config file from sacred for the model
-model_file: qmix_rnn_aware.th #The saved model weights
-actor_file: rnn_agent #The file the actor model architecture lives in
-actor_class: RNNAgent #The class the actor model architecture is in
+model_config_file: qmix_hyper_rnn.json #The config file from sacred for the model
+model_file: agent.th #The saved model weights
+actor_file: hyper_rnn_agent #The file the actor model architecture lives in
+actor_class: HyperRNNAgent #The class the actor model architecture is in
 env_file: MaterialTransport #The .py file this environment is in
 env_class: MaterialTransport #This needs to have all of the functionalities of a gym to work
 

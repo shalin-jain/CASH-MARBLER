@@ -31,11 +31,11 @@ def tukey_hsd_test(x, y, z, metric_name):
 
 if __name__ == "__main__":
     # load data per method
-    hyper_rnn = load_pkl("HyperRNNAgent_True_MaterialTransport/metrics.pkl")
+    hyper_rnn = load_pkl("Standard_MT/HyperRNNAgent_True_MaterialTransport/metrics.pkl")
     # rnn_exp = load_pkl("HyperRNNAgent_MaterialTransport/metrics.pkl")
     # rnn_imp = load_pkl("HyperRNNAgent_MaterialTransport/metrics.pkl")
-    rnn_exp = load_pkl("RNNAgent_True_MaterialTransport/metrics.pkl")
-    rnn_imp = load_pkl("RNNAgent_False_MaterialTransport/metrics.pkl")
+    rnn_exp = load_pkl("Standard_MT/RNNAgent_True_MaterialTransport/metrics.pkl")
+    rnn_imp = load_pkl("Standard_MT/RNNAgent_False_MaterialTransport/metrics.pkl")
     
     # Extract metrics
     metrics = ['totalReward', 'totalSteps', 'totalCollisions']

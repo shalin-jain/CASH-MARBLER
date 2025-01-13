@@ -1,19 +1,24 @@
 #Arguments needed by main.py
 scenario: PredatorCapturePrey #name of the folder inside scenarios
 
-model_config_file: mappo.json
-model_file: mappo.th
+model_config_file: qmix_rnn.json
+model_file: qmix_rnn_unaware.th
 
 actor_file: rnn_agent
 actor_class: RNNAgent
 
 env_file: PredatorCapturePrey
 env_class: PredatorCapturePrey #This needs to have all of the functionalities of a gym to work
+n_inputs: 24
 n_actions: 5 #The number of actions available for the agent
 n_agents: 4
-episodes: 2 #Number of episodes to run for
-shared_reward: True
-seed: 0 #sets the seed. Set to -1 to use a random seed.
+episodes: 500 #Number of episodes to run for
+shared_reward: False
+eval_dir: eval
+save_eval_output: True
+
+# seed: 0 #sets the seed. Set to -1 to use a random seed.
+seed: 76 # eval seed
 
 #Arguments needed by the environment
 #The follow four arguments are the boundaries in the Robotarium that the robots are allowed to traverse to
@@ -33,7 +38,7 @@ predator: 2
 predator_radius: [.4, .45, .5, .55, .6]
 capture: 2
 capture_radius: [.2, .25, .3, .35, .4]
-capability_aware: True #If true, the agents know their capture/sensing radius. Probably shouldn't use ids if true. Make sure this argument matches how the models were trained
+capability_aware: False #If true, the agents know their capture/sensing radius. Probably shouldn't use ids if true. Make sure this argument matches how the models were trained
 penalize_violations: True #If true, agents get a negative reward for collisions or boundary infractions and the episode stops
 show_figure_frequency: -1 #Set to -1 to turn off figures. Needs to be 1 when submitting to Robotarium
 real_time: False
