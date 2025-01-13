@@ -182,11 +182,11 @@ def run_env(config, module_dir):
                 if done[0]:
                     episodeSteps = j+1
                     if "collision" in env.env.errors:
-                        allCollisions = sum(env.env.errors["collision"])
+                        allCollisions = max(env.env.errors["collision"].values())
                         if allCollisions > currCollisions:
                             episodeSteps = config.max_episode_steps
                     if "boundary" in env.env.errors:
-                        allBoundary = sum(env.env.errors["boundary"])
+                        allBoundary = max(env.env.errors["boundary"].values())
                         if allBoundary > currBoundary:
                             episodeSteps = config.max_episode_steps
                     break
@@ -196,13 +196,13 @@ def run_env(config, module_dir):
             episodeCollision = 0
             episodeBoundary = 0
             if "collision" in env.env.errors:
-                allCollisions = sum(env.env.errors["collision"])
+                allCollisions = max(env.env.errors["collision"].values())
                 if allCollisions > currCollisions:
                     episodeCollision = allCollisions - currCollisions
                     currCollisions = allCollisions
                     # print(currCollisions)
             if "boundary" in env.env.errors:
-                allBoundary = sum(env.env.errors["boundary"])
+                allBoundary = max(env.env.errors["boundary"].values())
                 if allBoundary > currBoundary:
                     episodeBoundary = allBoundary - currBoundary
                     currBoundary = allBoundary
@@ -231,6 +231,8 @@ def run_env(config, module_dir):
     except Exception as error:
         print(error)
     finally:
+        # print(np.unique(env.env.errors["collision"]))
+        # print(np.unique(env.env.errors["boundary"]))
         if config.save_eval_output:
             metrics_path = os.path.join(module_dir, config.eval_dir, f"{config.actor_class}_{config.capability_aware}_{config.scenario}")
             if not os.path.exists(metrics_path):

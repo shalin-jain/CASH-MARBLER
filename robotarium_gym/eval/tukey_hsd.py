@@ -30,15 +30,17 @@ def tukey_hsd_test(x, y, z, metric_name):
     print(tukey_result.pvalues)
 
 if __name__ == "__main__":
+    parent_folder = ""
+    scenario = "PredatorCapturePrey"
     # load data per method
-    hyper_rnn = load_pkl("Standard_MT/HyperRNNAgent_True_MaterialTransport/metrics.pkl")
+    hyper_rnn = load_pkl(f"{parent_folder}HyperRNNAgent_True_{scenario}/metrics.pkl")
     # rnn_exp = load_pkl("HyperRNNAgent_MaterialTransport/metrics.pkl")
     # rnn_imp = load_pkl("HyperRNNAgent_MaterialTransport/metrics.pkl")
-    rnn_exp = load_pkl("Standard_MT/RNNAgent_True_MaterialTransport/metrics.pkl")
-    rnn_imp = load_pkl("Standard_MT/RNNAgent_False_MaterialTransport/metrics.pkl")
+    rnn_exp = load_pkl(f"{parent_folder}RNNAgent_True_{scenario}/metrics.pkl")
+    rnn_imp = load_pkl(f"{parent_folder}RNNAgent_False_{scenario}/metrics.pkl")
     
     # Extract metrics
-    metrics = ['totalReward', 'totalSteps', 'totalCollisions']
+    metrics = ['totalReward', 'totalSteps', 'totalCollisions', 'totalBoundary']
     
     for metric in metrics:
         tukey_hsd_test(
