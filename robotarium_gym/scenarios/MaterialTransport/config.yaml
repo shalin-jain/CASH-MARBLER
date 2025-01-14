@@ -1,9 +1,10 @@
 #Arguments needed to create proper paths to everything
 scenario: MaterialTransport #name of the folder inside scenarios
-model_config_file: qmix_hyper_rnn.json #The config file from sacred for the model
-model_file: agent.th #The saved model weights
-actor_file: hyper_rnn_agent #The file the actor model architecture lives in
-actor_class: HyperRNNAgent #The class the actor model architecture is in
+model_config_file: qmix_rnn.json #The config file from sacred for the model
+model_file: qmix_rnn_aware.th #The saved model weights
+model_dir: MT/RNNAware
+actor_file: rnn_agent #The file the actor model architecture lives in
+actor_class: RNNAgent #The class the actor model architecture is in
 env_file: MaterialTransport #The .py file this environment is in
 env_class: MaterialTransport #This needs to have all of the functionalities of a gym to work
 
@@ -40,10 +41,14 @@ gif_frequency: 29 # Frequency at which frames need to be saved for gif creation
 #Arguments needed by this scenario
 n_fast_agents: 2
 n_slow_agents: 2
-fast_step: [.4, .45, .5, .55, .6] 
-slow_step: [.1, .15, .2, .25, .3]
-large_torque: [14, 16, 18, 20, 22]
-small_torque: [4, 6, 8, 10, 12]
+# fast_step: [.4, .45, .5, .55, .6] # ID
+# slow_step: [.1, .15, .2, .25, .3] # ID
+# large_torque: [14, 16, 18, 20, 22] # ID
+# small_torque: [4, 6, 8, 10, 12] # ID
+fast_step: [0.3, .35, .375, .625, .65, 0.675] # OOD
+slow_step: [0.025, .05, .075, .325, .35, 0.375] # OOD
+large_torque: [11, 12, 13, 23, 24, 25] # OOD
+small_torque: [1, 2, 3, 13, 14, 15] # OOD
 unload_multiplier: .075
 load_multiplier: .025
 end_goal_width: .5

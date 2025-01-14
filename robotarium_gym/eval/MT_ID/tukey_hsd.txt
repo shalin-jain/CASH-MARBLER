@@ -1,71 +1,72 @@
+
 Mean and Std for totalReward:
-HyperRNN: Mean = 15.9606, Std = 7.6339
-RNNEXP: Mean = 15.2782, Std = 7.9491
-RNNIMP: Mean = 13.5246, Std = 8.5655
+HyperRNN: Mean = 14.8359, Std = 7.9094
+RNNEXP: Mean = 12.9380, Std = 8.2125
+RNNIMP: Mean = 2.3184, Std = 11.8641
 
 Tukey HSD results for totalReward:
- Multiple Comparison of Means - Tukey HSD, FWER=0.05  
-======================================================
- group1  group2 meandiff p-adj   lower   upper  reject
-------------------------------------------------------
-HyperRNN RNNEXP  -0.6824 0.3746 -1.8793  0.5145  False
-HyperRNN RNNIMP   -2.436    0.0 -3.6329 -1.2391   True
-  RNNEXP RNNIMP  -1.7536 0.0017 -2.9505 -0.5567   True
-------------------------------------------------------
+  Multiple Comparison of Means - Tukey HSD, FWER=0.05  
+=======================================================
+ group1  group2 meandiff p-adj  lower    upper   reject
+-------------------------------------------------------
+HyperRNN RNNEXP  -1.8979   0.0  -2.7114  -1.0843   True
+HyperRNN RNNIMP -12.5175   0.0  -13.331 -11.7039   True
+  RNNEXP RNNIMP -10.6196   0.0 -11.4332   -9.806   True
+-------------------------------------------------------
 
 Pairwise p-values:
-[3.74552140e-01 5.90178089e-06 1.74807945e-03]
+[1.42837163e-07 9.19375687e-13 9.19375687e-13]
 
 Mean and Std for totalSteps:
-HyperRNN: Mean = 47.5100, Std = 12.4384
-RNNEXP: Mean = 48.6240, Std = 12.1771
-RNNIMP: Mean = 52.2400, Std = 12.7987
+HyperRNN: Mean = 49.7853, Std = 12.8742
+RNNEXP: Mean = 53.5873, Std = 13.1039
+RNNIMP: Mean = 63.8493, Std = 12.4133
 
 Tukey HSD results for totalSteps:
  Multiple Comparison of Means - Tukey HSD, FWER=0.05 
 =====================================================
- group1  group2 meandiff p-adj   lower  upper  reject
+ group1  group2 meandiff p-adj  lower   upper  reject
 -----------------------------------------------------
-HyperRNN RNNEXP    1.114 0.3356 -0.7387 2.9667  False
-HyperRNN RNNIMP     4.73    0.0  2.8773 6.5827   True
-  RNNEXP RNNIMP    3.616    0.0  1.7633 5.4687   True
+HyperRNN RNNEXP    3.802   0.0  2.7058  4.8982   True
+HyperRNN RNNIMP   14.064   0.0 12.9678 15.1602   True
+  RNNEXP RNNIMP   10.262   0.0  9.1658 11.3582   True
 -----------------------------------------------------
 
 Pairwise p-values:
-[3.35615663e-01 7.89028243e-09 1.50887212e-05]
+[9.21041021e-13 9.19375687e-13 9.19375687e-13]
 
 Mean and Std for totalCollisions:
-HyperRNN: Mean = 0.0140, Std = 0.1175
-RNNEXP: Mean = 0.0220, Std = 0.1467
-RNNIMP: Mean = 0.0220, Std = 0.1467
+HyperRNN: Mean = 0.0133, Std = 0.1147
+RNNEXP: Mean = 0.0160, Std = 0.1255
+RNNIMP: Mean = 0.0280, Std = 0.1650
 
 Tukey HSD results for totalCollisions:
- Multiple Comparison of Means - Tukey HSD, FWER=0.05 
-=====================================================
- group1  group2 meandiff p-adj   lower  upper  reject
------------------------------------------------------
-HyperRNN RNNEXP    0.008 0.6289 -0.0124 0.0284  False
-HyperRNN RNNIMP    0.008 0.6289 -0.0124 0.0284  False
-  RNNEXP RNNIMP      0.0    1.0 -0.0204 0.0204  False
------------------------------------------------------
+Multiple Comparison of Means - Tukey HSD, FWER=0.05 
+====================================================
+ group1  group2 meandiff p-adj  lower  upper  reject
+----------------------------------------------------
+HyperRNN RNNEXP   0.0027 0.8547 -0.009 0.0144  False
+HyperRNN RNNIMP   0.0147 0.0094  0.003 0.0264   True
+  RNNEXP RNNIMP    0.012 0.0432 0.0003 0.0237   True
+----------------------------------------------------
 
 Pairwise p-values:
-[0.62893829 0.62893829 1.        ]
+[0.85470954 0.00936851 0.04315071]
 
 Mean and Std for totalBoundary:
-HyperRNN: Mean = 0.0040, Std = 0.0631
+HyperRNN: Mean = 0.0020, Std = 0.0447
 RNNEXP: Mean = 0.0060, Std = 0.0772
-RNNIMP: Mean = 0.0080, Std = 0.0891
+RNNIMP: Mean = 0.0127, Std = 0.1118
 
 Tukey HSD results for totalBoundary:
  Multiple Comparison of Means - Tukey HSD, FWER=0.05 
 =====================================================
  group1  group2 meandiff p-adj   lower  upper  reject
 -----------------------------------------------------
-HyperRNN RNNEXP    0.002 0.9119 -0.0095 0.0135  False
-HyperRNN RNNIMP    0.004 0.6917 -0.0075 0.0155  False
-  RNNEXP RNNIMP    0.002 0.9119 -0.0095 0.0135  False
+HyperRNN RNNEXP    0.004 0.3808 -0.0031 0.0111  False
+HyperRNN RNNIMP   0.0107 0.0012  0.0036 0.0177   True
+  RNNEXP RNNIMP   0.0067 0.0696 -0.0004 0.0137  False
 -----------------------------------------------------
 
 Pairwise p-values:
-[0.91186723 0.69171073 0.91186723]
+[0.38082679 0.00119555 0.06963791]

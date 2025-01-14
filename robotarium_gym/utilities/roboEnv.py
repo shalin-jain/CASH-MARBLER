@@ -18,7 +18,7 @@ class roboEnv:
             self.controller = Controller()
         self.first_run = True 
         self.episodes = 0
-        self.errors = {"collision":0, "boundary":0}
+        self.errors = {"collision":{0: 0}, "boundary":{0: 0}}
 
         # Figure showing and visualizing
         self.visualizer = agents.visualizer

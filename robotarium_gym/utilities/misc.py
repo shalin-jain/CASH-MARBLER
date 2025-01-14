@@ -134,6 +134,132 @@ def load_env_and_model(args, module_dir):
     return env, model, model_config
 
 
+def run_env_multiseed(config, module_dir):
+    n_agents = config.n_agents
+
+    totalReward = []
+    totalSteps = []
+    totalCollisions = []
+    totalBoundary = []
+    currCollisions = 0
+    currBoundary = 0
+    totalDists = np.zeros((config.episodes, n_agents))
+
+    if config.save_gif:
+        frames = []
+    
+    # get model files
+    models = [os.path.join(config.model_dir, folder, 'agent.th') for folder in os.listdir(os.path.join(module_dir, "scenarios", config.scenario, "models", config.model_dir))]
+
+    try:
+        for model_file in models:
+            config.model_file = model_file
+            env, model, model_config = load_env_and_model(config, module_dir)
+            obs = np.array(env.reset())
+            for i in tqdm(range(config.episodes)):
+                episodeReward = 0
+                episodeSteps = 0
+                episodeDistTravelled = np.zeros((n_agents))
+                hs = np.array([np.zeros((model_config.hidden_dim, )) for i in range(n_agents)])
+                for j in range(config.max_episode_steps+1):      
+                    if model_config.obs_agent_id: #Appends the agent id if obs_agent_id is true. TODO: support obs_last_action too
+                        obs = np.concatenate([obs,np.eye(n_agents)], axis=1)
+
+                    #Gets the q values and then the action from the q values
+                    if 'NS' in config.actor_class:
+                        q_values, hs = model(torch.Tensor(obs), torch.Tensor(hs.T))
+                    else:
+                        q_values, hs = model(torch.Tensor(obs), torch.Tensor(hs))
+                        
+                    actions = np.argmax(q_values.detach().numpy(), axis=1)
+
+                    obs, reward, done, info = env.step(actions)
+                    
+                    episodeDistTravelled += info['dist_travelled']
+
+                    if info is not None and 'frames' in info.keys():
+                        frames.extend(info['frames'])
+
+                    if model_config.shared_reward:
+                        episodeReward += reward[0]
+                    else:
+                        episodeReward += sum(reward)
+                    if done[0]:
+                        episodeSteps = j+1
+                        if "collision" in env.env.errors and isinstance(env.env.errors["collision"], dict):
+                            allCollisions = max(env.env.errors["collision"].values())
+                            if allCollisions > currCollisions:
+                                episodeSteps = config.max_episode_steps
+                        if "boundary" in env.env.errors and isinstance(env.env.errors["boundary"], dict):
+                            allBoundary = max(env.env.errors["boundary"].values())
+                            if allBoundary > currBoundary:
+                                episodeSteps = config.max_episode_steps
+                        break
+                if episodeSteps == 0:
+                    episodeSteps = config.max_episode_steps
+                
+                episodeCollision = 0
+                episodeBoundary = 0
+                if "collision" in env.env.errors and isinstance(env.env.errors["collision"], dict):
+                    allCollisions = max(env.env.errors["collision"].values())
+                    if allCollisions > currCollisions:
+                        episodeCollision = allCollisions - currCollisions
+                        currCollisions = allCollisions
+                        # print(currCollisions)
+                if "boundary" in env.env.errors and isinstance(env.env.errors["boundary"], dict):
+                    allBoundary = max(env.env.errors["boundary"].values())
+                    if allBoundary > currBoundary:
+                        episodeBoundary = allBoundary - currBoundary
+                        currBoundary = allBoundary
+                        # print(currBoundary)
+
+                # print('Episode', i+1)
+                # print('Episode reward:', episodeReward)
+                # print('Episode steps:', episodeSteps)
+                # print('Episode collisions:', episodeCollision)
+                # print('Episode boundary:', episodeBoundary)
+                # print('Episode distance travelled:', episodeDistTravelled)
+
+                totalReward.append(episodeReward)
+                totalSteps.append(episodeSteps)
+                totalCollisions.append(episodeCollision)
+                totalBoundary.append(episodeBoundary)
+                totalDists[i,:] = episodeDistTravelled
+
+                if config.show_figure_frequency != -1 and config.save_gif:
+                    gif_path = os.path.join(module_dir, config.eval_dir, f"{config.actor_class}_{config.scenario}")
+                    if not os.path.exists(gif_path):
+                        os.makedirs(gif_path)
+                    path_gif = os.path.join(gif_path, f"episode_{i}.gif")
+                    imageio.mimsave(path_gif, frames, duration = 100,loop=0)
+
+                obs = np.array(env.reset())
+            env.env.__del__()
+    except Exception as error:
+        print(error)
+    finally:
+        # print(np.unique(env.env.errors["collision"]))
+        # print(np.unique(env.env.errors["boundary"]))
+        if config.save_eval_output:
+            metrics_path = os.path.join(module_dir, config.eval_dir, f"{config.actor_class}_{config.capability_aware}_{config.scenario}")
+            if not os.path.exists(metrics_path):
+                os.makedirs(metrics_path)
+            metrics_path = os.path.join(metrics_path, "metrics.pkl")
+            with open(metrics_path, "wb") as f:
+                pickle.dump({
+                    "totalReward": totalReward,
+                    "totalSteps": totalSteps,
+                    "totalCollisions": totalCollisions,
+                    "totalBoundary": totalBoundary,
+                }, f)
+
+        print(f'\n[Reward] Mean: {np.mean(totalReward)}, Standard Deviation: {np.std(totalReward)}')
+        print(f'[Steps] Mean: {np.mean(totalSteps)}, Standard Deviation: {np.std(totalSteps)}')
+        print(f'[Collisions] Mean: {np.mean(totalCollisions)}, Standard Deviation: {np.std(totalCollisions)}')
+        print(f'[Boundary] Mean: {np.mean(totalBoundary)}, Standard Deviation: {np.std(totalBoundary)}')
+        print(f'[Dist] Mean: {np.mean(totalDists, axis=0)}, Standard Deviation: {np.std(totalDists)}')
+
+
 def run_env(config, module_dir):
     env, model, model_config = load_env_and_model(config, module_dir)
     obs = np.array(env.reset())

@@ -1,6 +1,6 @@
 import yaml
 import os
-from robotarium_gym.utilities.misc import run_env, load_env_and_model, objectview
+from robotarium_gym.utilities.misc import run_env, run_env_multiseed, objectview
 import argparse
 
 
@@ -22,7 +22,7 @@ def main():
         config = yaml.safe_load(f)
     config = objectview(config)
 
-    run_env(config, module_dir)
+    run_env_multiseed(config, module_dir)
     # load_env_and_model(config, module_dir)
 
 if __name__ == '__main__':
