@@ -157,7 +157,7 @@ class MaterialTransport(BaseEnv):
             info['frames'] = frames
 
         if self.args.power_decay:
-            for i in range(self.args.num_robots):
+            for i in range(self.args.n_agents):
                 self.agents[i].speed = self.agents[i].speed * self.args.decay_rate
         
         if self.args.motor_failure and self.episode_steps == self.args.max_episode_steps // 2:

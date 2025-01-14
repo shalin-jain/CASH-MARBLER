@@ -212,6 +212,7 @@ def run_env(config, module_dir):
             # print('Episode reward:', episodeReward)
             # print('Episode steps:', episodeSteps)
             # print('Episode collisions:', episodeCollision)
+            # print('Episode boundary:', episodeBoundary)
             # print('Episode distance travelled:', episodeDistTravelled)
 
             totalReward.append(episodeReward)
