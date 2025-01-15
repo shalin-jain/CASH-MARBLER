@@ -30,8 +30,8 @@ def tukey_hsd_test(x, y, z, metric_name):
     print(tukey_result.pvalues)
 
 if __name__ == "__main__":
-    parent_folder = "PCP_OOD/"
-    scenario = "PredatorCapturePrey"
+    parent_folder = "MT_MF/"
+    scenario = "MaterialTransport"
     # load data per method
     hyper_rnn = load_pkl(f"{parent_folder}HyperRNNAgent_True_{scenario}/metrics.pkl")
     # rnn_exp = load_pkl("HyperRNNAgent_MaterialTransport/metrics.pkl")
