@@ -1,0 +1,20 @@
+num_params:  162245
+BARRIER DEADLOCK DURING INITIALIZATION CREATING RANDOM POINT TO ALLEVIATE!
+BARRIER DEADLOCK DURING INITIALIZATION CREATING RANDOM POINT TO ALLEVIATE!
+Episode 1
+Episode reward: 22.400000000000034
+Episode steps: 52
+Episode collisions: 0
+Episode boundary: 0
+Episode distance travelled: [12.30360995  8.84426343  9.03966969 10.15232741]
+
+[Reward] Mean: 22.400000000000034, Standard Deviation: 0.0
+[Steps] Mean: 52.0, Standard Deviation: 0.0
+[Collisions] Mean: 0.0, Standard Deviation: 0.0
+[Boundary] Mean: 0.0, Standard Deviation: 0.0
+[Dist] Mean: [12.30360995  8.84426343  9.03966969 10.15232741], Standard Deviation: 1.374673213491389
+Exception ignored in: <module 'threading' from '/usr/lib/python3.8/threading.py'>
+Traceback (most recent call last):
+  File "/usr/lib/python3.8/threading.py", line 1388, in _shutdown
+    lock.acquire()
+KeyboardInterrupt: 

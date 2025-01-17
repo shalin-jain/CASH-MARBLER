@@ -1,0 +1,18 @@
+Method: hyper-rnn
+  Reward: Mean = 23.840, Std = 3.723
+  Steps: Mean = 48.400, Std = 9.308
+  Collisions: Mean = 0.000, Std = 0.000
+  Boundary: Mean = 0.000, Std = 0.000
+
+Method: rnn-aware
+  Reward: Mean = 23.120, Std = 2.955
+  Steps: Mean = 50.200, Std = 7.386
+  Collisions: Mean = 0.000, Std = 0.000
+  Boundary: Mean = 0.000, Std = 0.000
+
+Method: rnn-unaware
+  Reward: Mean = 21.520, Std = 1.568
+  Steps: Mean = 54.200, Std = 3.919
+  Collisions: Mean = 0.000, Std = 0.000
+  Boundary: Mean = 0.000, Std = 0.000
+

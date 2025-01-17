@@ -1,0 +1,28 @@
+num_params:  400901
+BARRIER DEADLOCK DURING INITIALIZATION CREATING RANDOM POINT TO ALLEVIATE!
+BARRIER DEADLOCK DURING INITIALIZATION CREATING RANDOM POINT TO ALLEVIATE!
+BARRIER DEADLOCK DURING INITIALIZATION CREATING RANDOM POINT TO ALLEVIATE!
+Episode 1
+Episode reward: 26.000000000000018
+Episode steps: 43
+Episode collisions: 0
+Episode boundary: 0
+Episode distance travelled: [11.12991255  9.05833545  9.59159193  9.62927783]
+
+[Reward] Mean: 26.000000000000018, Standard Deviation: 0.0
+[Steps] Mean: 43.0, Standard Deviation: 0.0
+[Collisions] Mean: 0.0, Standard Deviation: 0.0
+[Boundary] Mean: 0.0, Standard Deviation: 0.0
+[Dist] Mean: [11.12991255  9.05833545  9.59159193  9.62927783], Standard Deviation: 0.7714241919296663
+Robot(s) outside of safe boundaries! 
+ Stopping experiment
+Exception ignored in: <module 'threading' from '/usr/lib/python3.8/threading.py'>
+Traceback (most recent call last):
+  File "/usr/lib/python3.8/threading.py", line 1388, in _shutdown
+    lock.acquire()
+KeyboardInterrupt: 
+Exception ignored in: <function roboEnv.__del__ at 0x7f0cfc565040>
+Traceback (most recent call last):
+  File "/user_data/roboEnv.py", line 121, in __del__
+    self.robotarium.call_at_scripts_end()
+AttributeError: 'roboEnv' object has no attribute 'robotarium'
