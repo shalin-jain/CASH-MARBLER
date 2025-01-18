@@ -1,0 +1,18 @@
+num_params:  400901
+Episode 1
+Episode reward: 22.000000000000025
+Episode steps: 53
+Episode collisions: 0
+Episode boundary: 0
+Episode distance travelled: [17.38099819 17.14199222  2.78880942  2.47867986]
+
+[Reward] Mean: 22.000000000000025, Standard Deviation: 0.0
+[Steps] Mean: 53.0, Standard Deviation: 0.0
+[Collisions] Mean: 0.0, Standard Deviation: 0.0
+[Boundary] Mean: 0.0, Standard Deviation: 0.0
+[Dist] Mean: [17.38099819 17.14199222  2.78880942  2.47867986], Standard Deviation: 7.315185209929419
+Exception ignored in: <module 'threading' from '/usr/lib/python3.8/threading.py'>
+Traceback (most recent call last):
+  File "/usr/lib/python3.8/threading.py", line 1388, in _shutdown
+    lock.acquire()
+KeyboardInterrupt: 
