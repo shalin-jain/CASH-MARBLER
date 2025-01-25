@@ -28,7 +28,7 @@
     "hypernet_kwargs": {
       "INPUT_DIM": 24,
       "HIDDEN_DIM": 64,
-      "INIT_SCALE": 0.5,
+      "INIT_SCALE": 0.2,
       "NUM_LAYERS": 4,
       "USE_LAYER_NORM": true
     },
