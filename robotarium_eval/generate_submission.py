@@ -48,6 +48,7 @@ def main(args):
 
     #Copy Scenario models
     models = os.listdir(f'{base_path}/scenarios/{args.scenario}/models')
+    models = [m for m in models if not os.path.isdir(f'{base_path}/models/{m}')]
     for f in models:
         out = f
         for k in file_conversions:
