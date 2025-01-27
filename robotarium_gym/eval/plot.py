@@ -60,7 +60,7 @@ def fetch_wandb_data(project_name, tags, metrics):
 
 def get_from_wandb():
     project_name = "CASH-MARBLER"
-    tags = ['PCP']
+    tags = ['PCP-HARD-2']
     metrics = ['return_mean', 'return_std', 'test_return_mean', 'test_return_std', '_step']
 
     df = fetch_wandb_data(project_name, tags, metrics)
@@ -214,15 +214,15 @@ def plot_metrics(df, y_label, y_column, title, mean_window, std_window, downsamp
 
 if __name__ == "__main__":
     # get_from_wandb()
-    df = load_dataframe("MT-FINAL.pkl")
+    df = load_dataframe("PCP-HARD-FINAL.pkl")
     combined_df = combine_stats_across_seeds(df)
     combined_df['baseline'] = combined_df.apply(baseline_name, axis=1)
     print(combined_df.head())
 
     plot_metrics(combined_df, y_label='Return', y_column='combined_return', title='Return', mean_window=50, std_window=50, downsample_factor=10, save_folder='plots')
-    plt.savefig('plots/mt_return.png')
+    plt.savefig('plots/pcp_hard_return.png')
     plt.show()
 
     plot_metrics(combined_df, y_label='Test Return', y_column='combined_test_return', title='Test Return', mean_window=50, std_window=50, downsample_factor=10, save_folder='plots')
-    plt.savefig('plots/mt_test_return.png')
+    plt.savefig('plots/pcp_hard_test_return.png')
     plt.show()
