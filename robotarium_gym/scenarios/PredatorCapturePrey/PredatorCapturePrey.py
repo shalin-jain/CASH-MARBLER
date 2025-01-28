@@ -183,7 +183,22 @@ class PredatorCapturePrey(BaseEnv):
         info['dist_travelled'] = dist
         if terminated:
             pass
-            # print(f"Remaining prey: {updated_state['num_prey']} {return_message}")   
+            # print(f"Remaining prey: {updated_state['num_prey']} {return_message}")
+
+        if self.args.sensor_decay:
+            for i in range(self.args.n_agents):
+                if i < self.num_predators:
+                    self.agents[i].sensing_radius = self.agents[i].sensing_radius * self.args.decay_rate
+                else:
+                    self.agents[i].capture_radius = self.agents[i].capture_radius * self.args.decay_rate
+        
+        if self.args.sensor_failure and self.episode_steps == self.args.max_episode_steps // 2:
+            i = np.random.randint(0, self.num_robots)
+            self.agents[i].error = True
+            if i < self.num_predators:
+                self.agents[i].sensing_radius = self.agents[i].sensing_radius * 0.25
+            else:
+                self.agents[i].capture_radius = self.agents[i].capture_radius * 0.25
         
         if self.args.save_gif:
             info['frames'] = frames

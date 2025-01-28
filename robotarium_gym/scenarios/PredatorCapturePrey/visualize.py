@@ -3,23 +3,40 @@ from robotarium_gym.scenarios.base import BaseVisualization
 
 class Visualize(BaseVisualization):
     def __init__(self, args):
-        self.predator_marker_size_m = args.predator_radius
-        self.capture_marker_size_m = args.capture_radius
+        # self.predator_marker_size_m = args.predator_radius[0]
+        # self.capture_marker_size_m = args.capture_radius[0]
         self.goal_marker_size_m = .05
         self.line_width = 1
         self.CM = plt.cm.get_cmap('hsv', 7) # Agent/goal color scheme
         self.show_figure = True
     
     def initialize_markers(self, robotarium, agents):
-        marker_size_predator = determine_marker_size(robotarium, self.predator_marker_size_m)
-        marker_size_capture = determine_marker_size(robotarium, self.capture_marker_size_m)
+        marker_sizes = []
+        for i, agent in enumerate(agents.agents):
+            if i < agents.num_predators:
+                marker_sizes.append(
+                    determine_marker_size(
+                        robotarium,
+                        agent.sensing_radius
+                    )
+                )
+            else:
+                marker_sizes.append(
+                    determine_marker_size(
+                        robotarium,
+                        agent.capture_radius
+                    )
+                )
+        # marker_size_predator = determine_marker_size(robotarium, self.predator_marker_size_m)
+        # marker_size_capture = determine_marker_size(robotarium, self.capture_marker_size_m)
         marker_size_goal = determine_marker_size(robotarium,self.goal_marker_size_m)          
 
         self.robot_markers = [ robotarium.axes.scatter( \
                 agents.agent_poses[0,ii], agents.agent_poses[1,ii], 
-                s=(marker_size_predator if ii < agents.num_predators else marker_size_capture), \
+                s=marker_sizes[ii], \
                 marker='o', facecolors='none',\
-                edgecolors = self.CM(0 if ii < agents.num_predators else 1), linewidth=self.line_width )\
+                edgecolors = self.CM(0 if ii < agents.num_predators else 1) if not agents.agents[ii].error else 'black',\
+                linewidth=self.line_width )\
                 for ii in range(agents.num_robots) ]
         
         self.prey_markers = [robotarium.axes.scatter( \
@@ -32,8 +49,8 @@ class Visualize(BaseVisualization):
         for i in range(agents.agent_poses.shape[1]):
             self.robot_markers[i].set_offsets(agents.agent_poses[:2,i].T)
             # Next two lines updates the marker sizes if the figure window size is changed. 
-            self.robot_markers[i].set_sizes([determine_marker_size(robotarium, \
-                (self.predator_marker_size_m if i < agents.num_predators else self.capture_marker_size_m))])
+            # self.robot_markers[i].set_sizes([determine_marker_size(robotarium, \
+            #     (self.predator_marker_size_m if i < agents.num_predators else self.capture_marker_size_m))])
         
         # update prey marker color if sensed, remove if captured
         for i in range(agents.num_prey):

@@ -14,6 +14,7 @@ class Agent:
         self.capture_radius = capture_radius
         self.action_id2w = action_id_to_word
         self.capability_aware = capability_aware
+        self.error = False
         
 
     def get_observation( self, state_space, agents):
