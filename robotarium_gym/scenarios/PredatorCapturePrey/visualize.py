@@ -9,6 +9,7 @@ class Visualize(BaseVisualization):
         self.line_width = 1
         self.CM = plt.cm.get_cmap('hsv', 7) # Agent/goal color scheme
         self.show_figure = True
+        self.marker_sizes = []
     
     def initialize_markers(self, robotarium, agents):
         marker_sizes = []
@@ -27,6 +28,7 @@ class Visualize(BaseVisualization):
                         agent.capture_radius
                     )
                 )
+        self.marker_sizes = marker_sizes
         # marker_size_predator = determine_marker_size(robotarium, self.predator_marker_size_m)
         # marker_size_capture = determine_marker_size(robotarium, self.capture_marker_size_m)
         marker_size_goal = determine_marker_size(robotarium,self.goal_marker_size_m)          
@@ -51,6 +53,10 @@ class Visualize(BaseVisualization):
             # Next two lines updates the marker sizes if the figure window size is changed. 
             # self.robot_markers[i].set_sizes([determine_marker_size(robotarium, \
             #     (self.predator_marker_size_m if i < agents.num_predators else self.capture_marker_size_m))])
+            if agents.agents[i].error:
+                self.robot_markers[i].set_edgecolor('black')
+                self.robot_markers[i].set_sizes([self.marker_sizes[i]*0.25])
+                agents.agents[i].error = False # so update only happens once
         
         # update prey marker color if sensed, remove if captured
         for i in range(agents.num_prey):
