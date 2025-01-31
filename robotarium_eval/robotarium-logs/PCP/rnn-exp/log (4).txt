@@ -1,0 +1,24 @@
+2025-01-30 21:03:44,895:INFO:mqttinterface - MQTT client successfully connected to broker on host: 192.168.1.8, port: 1884
+2025-01-30 21:03:44,895:INFO:mqttinterface - Reconnect message received.  Resubscribing to topics (dict_keys(['overhead_tracker/all_robot_pose_data'])).
+/user_data/misc.py:167: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:245.)
+  q_values, hs = model(torch.Tensor(obs), torch.Tensor(hs))
+2025-01-30 21:05:44,471:INFO:mqttinterface - MQTT client successfully connected to broker on host: 192.168.1.8, port: 1884
+2025-01-30 21:05:44,471:INFO:mqttinterface - Reconnect message received.  Resubscribing to topics (dict_keys([])).
+num_params:  402437
+Episode 1
+Episode reward: -16.199999999999974
+Episode steps: 81
+Episode collisions: 0
+Episode boundary: 0
+Episode distance travelled: [5.84495103 2.79070061 5.57558844 6.69227332]
+
+[Reward] Mean: -16.199999999999974, Standard Deviation: 0.0
+[Steps] Mean: 81.0, Standard Deviation: 0.0
+[Collisions] Mean: 0.0, Standard Deviation: 0.0
+[Boundary] Mean: 0.0, Standard Deviation: 0.0
+[Dist] Mean: [5.84495103 2.79070061 5.57558844 6.69227332], Standard Deviation: 1.4650898395330103
+Exception ignored in: <module 'threading' from '/usr/lib/python3.8/threading.py'>
+Traceback (most recent call last):
+  File "/usr/lib/python3.8/threading.py", line 1388, in _shutdown
+    lock.acquire()
+KeyboardInterrupt: 

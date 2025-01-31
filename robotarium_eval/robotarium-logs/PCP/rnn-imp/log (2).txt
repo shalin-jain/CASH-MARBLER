@@ -1,0 +1,24 @@
+num_params:  402437
+BARRIER DEADLOCK DURING INITIALIZATION CREATING RANDOM POINT TO ALLEVIATE!
+BARRIER DEADLOCK DURING INITIALIZATION CREATING RANDOM POINT TO ALLEVIATE!
+BARRIER DEADLOCK DURING INITIALIZATION CREATING RANDOM POINT TO ALLEVIATE!
+BARRIER DEADLOCK DURING INITIALIZATION CREATING RANDOM POINT TO ALLEVIATE!
+BARRIER DEADLOCK DURING INITIALIZATION CREATING RANDOM POINT TO ALLEVIATE!
+BARRIER DEADLOCK DURING INITIALIZATION CREATING RANDOM POINT TO ALLEVIATE!
+Episode 1
+Episode reward: 79.79999999999984
+Episode steps: 81
+Episode collisions: 0
+Episode boundary: 0
+Episode distance travelled: [7.2610864  7.24489701 6.12553177 6.20272868]
+
+[Reward] Mean: 79.79999999999984, Standard Deviation: 0.0
+[Steps] Mean: 81.0, Standard Deviation: 0.0
+[Collisions] Mean: 0.0, Standard Deviation: 0.0
+[Boundary] Mean: 0.0, Standard Deviation: 0.0
+[Dist] Mean: [7.2610864  7.24489701 6.12553177 6.20272868], Standard Deviation: 0.5451444882036778
+Exception ignored in: <module 'threading' from '/usr/lib/python3.8/threading.py'>
+Traceback (most recent call last):
+  File "/usr/lib/python3.8/threading.py", line 1388, in _shutdown
+    lock.acquire()
+KeyboardInterrupt: 

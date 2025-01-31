@@ -152,6 +152,7 @@ def run_env_multiseed(config, module_dir):
     models = [os.path.join(config.model_dir, folder, 'agent.th') for folder in os.listdir(os.path.join(module_dir, "scenarios", config.scenario, "models", config.model_dir))]
 
     try:
+        seed = 0   # assumes sequential seeds
         for model_file in models:
             config.model_file = model_file
             env, model, model_config = load_env_and_model(config, module_dir)
@@ -230,11 +231,14 @@ def run_env_multiseed(config, module_dir):
                     gif_path = os.path.join(module_dir, config.eval_dir, f"{config.actor_class}_{config.scenario}")
                     if not os.path.exists(gif_path):
                         os.makedirs(gif_path)
-                    path_gif = os.path.join(gif_path, f"episode_{i}.gif")
+                    path_gif = os.path.join(gif_path, f"episode_{i}_{seed}.gif")
+                    # print(path_gif)
                     imageio.mimsave(path_gif, frames, duration = 100,loop=0)
+                    frames = []
 
                 obs = np.array(env.reset())
             env.env.__del__()
+            seed += 1
     except Exception as error:
         print(error)
     finally:

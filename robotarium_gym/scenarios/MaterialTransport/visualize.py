@@ -21,11 +21,19 @@ class Visualize(BaseVisualization):
         self.goals.append(robotarium.axes.add_patch(patches.Rectangle([-1.5,-1], w,2, color=self.CM(4), zorder=-1)))
         self.goals.append(robotarium.axes.add_patch(patches.Rectangle([1.5-w,-1], w,2, color=self.CM(3), zorder=-1)))
 
-        self.robot_markers = [ robotarium.axes.scatter( \
-                agents.agent_poses[0,ii], agents.agent_poses[1,ii],
-                s=agent_marker_size, marker='o', facecolors='none',\
-                edgecolors = (self.CM(0) if ii<agents.args.n_fast_agents else self.CM(1)), linewidth=self.line_width )\
-                for ii in range(agents.num_robots) ]
+        self.robot_markers = [ 
+            robotarium.axes.scatter(
+                agents.agent_poses[0, ii], 
+                agents.agent_poses[1, ii],
+                s=agent_marker_size, 
+                marker='o', 
+                facecolors='none',
+                edgecolors=('black' if agents.agents[ii].error else 
+                            (self.CM(0) if ii < agents.args.n_fast_agents else self.CM(1))),
+                linewidth=self.line_width
+            ) 
+            for ii in range(agents.num_robots) 
+        ]
 
         self.zone1 = robotarium.axes.scatter( \
                 0, 0, s=marker_size_zone1, marker='o', facecolors='none', 
@@ -39,6 +47,8 @@ class Visualize(BaseVisualization):
     def update_markers(self, robotarium, agents):
         for i in range(agents.agent_poses.shape[1]):
             self.robot_markers[i].set_offsets(agents.agent_poses[:2,i].T)
+            if agents.agents[i].error:
+                self.robot_markers[i].set_edgecolors('red')
             # Next two lines updates the marker sizes if the figure window size is changed.
             self.robot_markers[i].set_sizes([determine_marker_size(robotarium, self.agent_marker_size_m)])
         self.zone1.set_sizes([determine_marker_size(robotarium, self.zone1_marker_size_m)])

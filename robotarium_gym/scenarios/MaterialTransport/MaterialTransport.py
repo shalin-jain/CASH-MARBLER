@@ -15,6 +15,7 @@ class Agent:
         self.speed = speed
         self.load = 0
         self.action_id2w = action_id_to_word
+        self.error = False
    
     def generate_goal(self, goal_pose, action, args):    
         '''
@@ -161,7 +162,9 @@ class MaterialTransport(BaseEnv):
                 self.agents[i].speed = self.agents[i].speed * self.args.decay_rate
         
         if self.args.motor_failure and self.episode_steps == self.args.max_episode_steps // 2:
+            print(self.episode_steps)
             i = np.random.randint(0, self.num_robots)
+            self.agents[i].error = True
             self.agents[i].speed = self.agents[i].speed * 0.25
 
         return obs, [reward] * self.num_robots, [terminated]*self.num_robots, info
