@@ -141,6 +141,7 @@ def run_env_multiseed(config, module_dir):
     totalSteps = []
     totalCollisions = []
     totalBoundary = []
+    totalSuccess = []
     currCollisions = 0
     currBoundary = 0
     totalDists = np.zeros((config.episodes, n_agents))
@@ -159,6 +160,7 @@ def run_env_multiseed(config, module_dir):
             for i in tqdm(range(config.episodes)):
                 episodeReward = 0
                 episodeSteps = 0
+                episodeSuccess = 0
                 episodeDistTravelled = np.zeros((n_agents))
                 hs = np.array([np.zeros((model_config.hidden_dim, )) for i in range(n_agents)])
                 for j in range(config.max_episode_steps+1):      
@@ -194,6 +196,8 @@ def run_env_multiseed(config, module_dir):
                             allBoundary = max(env.env.errors["boundary"].values())
                             if allBoundary > currBoundary:
                                 episodeSteps = config.max_episode_steps
+                        if info is not None and 'pct_done' in info.keys():
+                            episodeSuccess = info['pct_done']
                         break
                 if episodeSteps == 0:
                     episodeSteps = config.max_episode_steps
@@ -224,6 +228,7 @@ def run_env_multiseed(config, module_dir):
                 totalSteps.append(episodeSteps)
                 totalCollisions.append(episodeCollision)
                 totalBoundary.append(episodeBoundary)
+                totalSuccess.append(episodeSuccess)
                 totalDists[i,:] = episodeDistTravelled
 
                 if config.show_figure_frequency != -1 and config.save_gif:
@@ -251,6 +256,7 @@ def run_env_multiseed(config, module_dir):
                     "totalSteps": totalSteps,
                     "totalCollisions": totalCollisions,
                     "totalBoundary": totalBoundary,
+                    "totalSuccess": totalSuccess
                 }, f)
 
         print(f'\n[Reward] Mean: {np.mean(totalReward)}, Standard Deviation: {np.std(totalReward)}')
@@ -258,6 +264,7 @@ def run_env_multiseed(config, module_dir):
         print(f'[Collisions] Mean: {np.mean(totalCollisions)}, Standard Deviation: {np.std(totalCollisions)}')
         print(f'[Boundary] Mean: {np.mean(totalBoundary)}, Standard Deviation: {np.std(totalBoundary)}')
         print(f'[Dist] Mean: {np.mean(totalDists, axis=0)}, Standard Deviation: {np.std(totalDists)}')
+        print(f'[Success] Mean: {np.mean(totalSuccess)}, Standard Deviation: {np.std(totalSuccess)}')
 
 
 def run_env(config, module_dir):
@@ -269,6 +276,7 @@ def run_env(config, module_dir):
     totalSteps = []
     totalCollisions = []
     totalBoundary = []
+    totalSuccess = []
     currCollisions = 0
     currBoundary = 0
     totalDists = np.zeros((config.episodes, n_agents))
@@ -280,6 +288,7 @@ def run_env(config, module_dir):
         for i in tqdm(range(config.episodes)):
             episodeReward = 0
             episodeSteps = 0
+            episodeSuccess = 0
             episodeDistTravelled = np.zeros((n_agents))
             hs = np.array([np.zeros((model_config.hidden_dim, )) for i in range(n_agents)])
             for j in range(config.max_episode_steps+1):      
@@ -300,6 +309,10 @@ def run_env(config, module_dir):
 
                 if info is not None and 'frames' in info.keys():
                     frames.extend(info['frames'])
+                
+                if info is not None and 'remaining' in info.keys():
+                    if info['remaining'] == 0:
+                        episodeSuccess = 1
 
                 if model_config.shared_reward:
                     episodeReward += reward[0]
@@ -345,6 +358,7 @@ def run_env(config, module_dir):
             totalSteps.append(episodeSteps)
             totalCollisions.append(episodeCollision)
             totalBoundary.append(episodeBoundary)
+            totalSuccess.append(episodeSuccess)
             totalDists[i,:] = episodeDistTravelled
 
             if config.show_figure_frequency != -1 and config.save_gif:
@@ -371,6 +385,7 @@ def run_env(config, module_dir):
                     "totalSteps": totalSteps,
                     "totalCollisions": totalCollisions,
                     "totalBoundary": totalBoundary,
+                    "totalSuccess": totalSuccess
                 }, f)
 
         print(f'\n[Reward] Mean: {np.mean(totalReward)}, Standard Deviation: {np.std(totalReward)}')
@@ -378,3 +393,4 @@ def run_env(config, module_dir):
         print(f'[Collisions] Mean: {np.mean(totalCollisions)}, Standard Deviation: {np.std(totalCollisions)}')
         print(f'[Boundary] Mean: {np.mean(totalBoundary)}, Standard Deviation: {np.std(totalBoundary)}')
         print(f'[Dist] Mean: {np.mean(totalDists, axis=0)}, Standard Deviation: {np.std(totalDists)}')
+        print(f'[Success] Mean: {np.mean(totalSuccess)}, Standard Deviation: {np.std(totalSuccess)}')

@@ -1,0 +1,209 @@
+num_params:  400901
+Task Completion: 0.04
+Task Completion: 0.12
+Task Completion: 0.04
+Task Completion: 0.00
+Task Completion: 0.00
+Task Completion: 0.13
+Task Completion: 0.43
+Task Completion: 0.29
+Task Completion: 0.00
+Task Completion: 0.28
+Task Completion: 0.06
+Task Completion: 0.03
+Task Completion: 0.06
+Task Completion: 0.00
+Task Completion: 0.39
+Task Completion: 0.79
+Task Completion: 0.33
+Task Completion: 0.02
+Task Completion: 0.00
+Task Completion: 0.00
+Task Completion: 0.40
+Task Completion: 0.04
+Task Completion: 0.37
+Task Completion: 0.05
+Task Completion: 0.09
+Task Completion: 0.00
+Task Completion: 0.10
+Task Completion: 0.81
+Task Completion: 0.00
+Task Completion: 0.21
+Task Completion: 0.15
+Task Completion: 0.07
+Task Completion: 0.19
+Task Completion: 0.08
+Task Completion: 0.00
+Task Completion: 0.00
+Task Completion: 0.04
+Task Completion: 0.83
+Task Completion: 0.05
+Task Completion: 0.87
+Task Completion: 0.03
+Task Completion: 0.00
+Task Completion: 0.39
+Task Completion: 0.00
+Task Completion: 0.86
+Task Completion: 0.03
+Task Completion: 0.15
+Task Completion: 0.08
+Task Completion: 0.00
+Task Completion: 0.83
+##### DEBUG OUTPUT #####
+Your simulation will take approximately 1 real seconds when deployed on the Robotarium. 
+
+	 Simulation had 4 iteration(s) robots were outside the boundaries.
+
+	 Simulation had 6 iteration(s) where robots collided.
+
+	 Simulation had 17348 iteration(s) where the actuator limits were exceeded.
+num_params:  400901
+Task Completion: 0.00
+Task Completion: 0.85
+Task Completion: 0.84
+Task Completion: 0.85
+Task Completion: 0.00
+Task Completion: 0.00
+Task Completion: 0.86
+Task Completion: 0.00
+Task Completion: 0.06
+Task Completion: 0.66
+Task Completion: 0.28
+Task Completion: 0.78
+Task Completion: 0.00
+Task Completion: 0.19
+Task Completion: 0.86
+Task Completion: 0.70
+Task Completion: 0.81
+Task Completion: 0.83
+Task Completion: 0.00
+Task Completion: 0.63
+Task Completion: 0.77
+Task Completion: 0.52
+Task Completion: 0.05
+Task Completion: 0.00
+Task Completion: 0.85
+Task Completion: 0.80
+Task Completion: 0.00
+Task Completion: 0.77
+Task Completion: 0.00
+Task Completion: 0.75
+Task Completion: 0.00
+Task Completion: 0.80
+Task Completion: 0.98
+Task Completion: 0.00
+Task Completion: 0.00
+Task Completion: 0.87
+Task Completion: 0.22
+Task Completion: 0.86
+Task Completion: 0.84
+Task Completion: 0.32
+Task Completion: 0.68
+Task Completion: 0.10
+Task Completion: 0.71
+Task Completion: 0.91
+Task Completion: 0.86
+Task Completion: 0.31
+Task Completion: 0.79
+Task Completion: 0.26
+Task Completion: 0.00
+Task Completion: 0.00
+##### DEBUG OUTPUT #####
+Your simulation will take approximately 1 real seconds when deployed on the Robotarium. 
+
+	 Simulation had 8 iteration(s) robots were outside the boundaries.
+
+	 Simulation had 7 iteration(s) where robots collided.
+
+	 Simulation had 37473 iteration(s) where the actuator limits were exceeded.
+num_params:  400901
+Task Completion: 0.00
+Task Completion: 0.80
+Task Completion: 0.85
+Task Completion: 0.99
+##### DEBUG OUTPUT #####
+Your simulation will take approximately 1 real seconds when deployed on the Robotarium. 
+
+	 Simulation had 8 iteration(s) robots were outside the boundaries.
+
+	 Simulation had 7 iteration(s) where robots collided.
+
+	 Simulation had 39859 iteration(s) where the actuator limits were exceeded.
+Task Completion: 0.93
+Task Completion: 0.99
+Task Completion: 0.92
+Task Completion: 0.85
+Task Completion: 1.00
+Task Completion: 0.89
+Task Completion: 0.00
+Task Completion: 0.00
+Task Completion: 0.00
+Task Completion: 0.35
+Task Completion: 0.99
+Task Completion: 0.62
+Task Completion: 1.00
+Task Completion: 1.00
+Task Completion: 0.93
+Task Completion: 1.00
+Task Completion: 0.86
+Task Completion: 0.90
+Task Completion: 0.92
+Task Completion: 0.87
+Task Completion: 0.35
+Task Completion: 0.00
+Task Completion: 0.93
+Task Completion: 0.73
+Task Completion: 0.00
+Task Completion: 0.94
+Task Completion: 0.20
+Task Completion: 0.67
+Task Completion: 0.99
+Task Completion: 0.00
+Task Completion: 0.92
+Task Completion: 0.77
+Task Completion: 0.75
+Task Completion: 0.77
+Task Completion: 0.63
+Task Completion: 0.53
+Task Completion: 0.82
+Task Completion: 0.60
+Task Completion: 1.00
+Task Completion: 0.87
+Task Completion: 0.86
+Task Completion: 0.93
+Task Completion: 0.41
+Task Completion: 0.80
+Task Completion: 0.00
+Task Completion: 0.67
+##### DEBUG OUTPUT #####
+Your simulation will take approximately 1 real seconds when deployed on the Robotarium. 
+
+	 Simulation had 11 iteration(s) robots were outside the boundaries.
+
+	 Simulation had 8 iteration(s) where robots collided.
+
+	 Simulation had 68302 iteration(s) where the actuator limits were exceeded.
+
+[Reward] Mean: 1.7459999999999765, Standard Deviation: 73.83121348047857
+[Steps] Mean: 51.233333333333334, Standard Deviation: 23.54949869718863
+[Collisions] Mean: 0.05333333333333334, Standard Deviation: 0.22469732728470287
+[Boundary] Mean: 0.07333333333333333, Standard Deviation: 0.2606828639468953
+[Dist] Mean: [8.09154186 8.02814919 8.35195981 7.84529068 7.82234888 8.04990723
+ 4.70661137 5.28865345 5.27723341 4.80147297 5.31512883 4.91678002], Standard Deviation: 3.3502414316468045
+[Success] Mean: 0.44551630882307447, Standard Deviation: 0.3853501261879686
+##### DEBUG OUTPUT #####
+Your simulation will take approximately 1 real seconds when deployed on the Robotarium. 
+
+	 Simulation had 11 iteration(s) robots were outside the boundaries.
+
+	 Simulation had 8 iteration(s) where robots collided.
+
+	 Simulation had 68302 iteration(s) where the actuator limits were exceeded.
+##### DEBUG OUTPUT #####
+Your simulation will take approximately 1 real seconds when deployed on the Robotarium. 
+
+	 Simulation had 11 iteration(s) robots were outside the boundaries.
+
+	 Simulation had 8 iteration(s) where robots collided.
+
+	 Simulation had 68302 iteration(s) where the actuator limits were exceeded.

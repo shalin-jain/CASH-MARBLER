@@ -54,7 +54,7 @@ class MaterialTransport(BaseEnv):
         # Calculate the updated observation dimension
         # ego_pos_x, ego_pos_y, other_agents_pos_x * (n_agents - 1), other_agents_pos_y * (n_agents - 1)
         # zone1_load, zone2_load, ego_torque, ego_speed, other_agents_torque * (n_agents - 1), other_agents_speed * (n_agents - 1)
-        self.agent_obs_dim = 2 + 2 * (self.num_robots - 1) + 2 + 2 + 2 * (self.num_robots - 1)
+        self.agent_obs_dim = 2 + 2 * (self.args.num_neighbors) + 2 + 2 + 2 * (self.args.num_neighbors)
 
         self.zone1_args = copy.deepcopy(self.args.zone1)
         del self.zone1_args['distribution']   
@@ -101,6 +101,8 @@ class MaterialTransport(BaseEnv):
         #Randomly sets the load for each zone
         self.zone1_load = int(getattr(np.random, self.args.zone1['distribution'])(**self.zone1_args))
         self.zone2_load = int(getattr(np.random, self.args.zone2['distribution'])(**self.zone2_args))
+        self.original_zone1_load = self.zone1_load
+        self.original_zone2_load = self.zone2_load
         
         # Reset agent capabilities
         self.agents = []
@@ -114,10 +116,10 @@ class MaterialTransport(BaseEnv):
             self.agents.append(Agent(i, self.action_id2w, large_torque, slow_step))
         
         #Generate the agent locations based on the config
-        width = self.args.end_goal_width
+        width = self.args.end_goal_width*2
         height = self.args.DOWN - self.args.UP
         #Agents can spawn in the Robotarium between UP, DOWN, LEFT and LEFT+end_goal_width for this scenario
-        self.agent_poses = generate_initial_locations(self.num_robots, width, height, self.args.LEFT+self.args.end_goal_width, start_dist=self.args.start_dist)
+        self.agent_poses = generate_initial_locations(self.num_robots, width, height, self.args.LEFT+(self.args.end_goal_width*2), start_dist=self.args.start_dist)
         self.env.reset()
         return [[0]*self.agent_obs_dim] * self.num_robots
     
@@ -151,7 +153,9 @@ class MaterialTransport(BaseEnv):
         info['dist_travelled'] = dist
         if terminated:
             # print(f'Remaining: {self.zone1_load + self.zone2_load + sum(a.load for a in self.agents)} {return_message}')
-            info['remaining'] = self.zone1_load + self.zone2_load + sum(a.load for a in self.agents)        
+            info['remaining'] = self.zone1_load + self.zone2_load + sum(a.load for a in self.agents)
+            info['pct_done'] = (self.original_zone1_load + self.original_zone2_load - info['remaining']) / (self.original_zone1_load + self.original_zone2_load)
+            print(f"Task Completion: {info['pct_done']:.2f}")       
  
         if self.args.save_gif:
             info['frames'] = frames
@@ -177,24 +181,29 @@ class MaterialTransport(BaseEnv):
         """
         observations = []
         for ego_index, ego_agent in enumerate(self.agents):
+            if self.args.num_neighbors >= self.num_robots-1:
+                nbr_indices = [i for i in range(self.num_robots) if i != ego_index]
+            else:
+                nbr_indices = get_nearest_neighbors(self.agent_poses, ego_index, self.args.num_neighbors)
+
             ego_pos = self.agent_poses[:, ego_index][:2]  # Ego position (x, y)
             other_agents_pos = [
-                self.agent_poses[:, i][:2] - ego_pos for i in range(self.num_robots) if i != ego_index
+                self.agent_poses[:, i][:2] - ego_pos for i in nbr_indices
             ]  # other agents' positions
             other_agents_pos_flat = [coord for pos in other_agents_pos for coord in pos]
 
             if self.args.capability_aware: 
                 other_agents_torque = [
-                    self.agents[i].torque for i in range(self.num_robots) if i != ego_index
+                    self.agents[i].torque for i in nbr_indices
                 ]  # other agents' torque
 
                 other_agents_speed = [
-                    self.agents[i].speed for i in range(self.num_robots) if i != ego_index
+                    self.agents[i].speed for i in nbr_indices
                 ]  # other agents' speed
 
                 other_agents_cap = [cap for cap_pair in zip(other_agents_torque, other_agents_speed) for cap in cap_pair]
             else:
-                other_agents_cap = [0] * (2 * (self.num_robots - 1))
+                other_agents_cap = [0] * (2 * self.args.num_neighbors)
 
             observation = [
                 *ego_pos,

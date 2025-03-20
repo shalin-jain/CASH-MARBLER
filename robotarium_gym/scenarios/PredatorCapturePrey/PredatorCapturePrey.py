@@ -173,15 +173,18 @@ class PredatorCapturePrey(BaseEnv):
             rewards = -5
         else:    
             rewards = self.get_rewards(updated_state)
+
+            info['remaining'] = updated_state['num_prey']
             
             # condition for checking for the whether the episode is terminated
             if self.episode_steps > self.args.max_episode_steps or \
                 updated_state['num_prey'] == 0:
-                info['remaining'] = updated_state['num_prey']
                 terminated = True              
 
         info['dist_travelled'] = dist
         if terminated:
+            info['pct_done'] = (self.num_prey - updated_state['num_prey']) / self.num_prey
+            print(f"Task Completion Percentage: {info['pct_done']}")
             pass
             # print(f"Remaining prey: {updated_state['num_prey']} {return_message}")
 
