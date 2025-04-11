@@ -25,25 +25,25 @@ class Agent:
             Returns: [agent_x_pos, agent_y_pos, sensed_prey_x_pose, sensed_prey_y_pose, sensing_radius, capture_radius]
             array of dimension [1, OBS_DIM] 
         '''
-        # distance from the closest prey in range
-        closest_prey = -1
-        # Iterate over all prey
-        for p in state_space['prey']:
-            # For each prey check if they are in range and get the distance
-            in_range, dist = is_close(state_space['poses'], self.index, p, self.sensing_radius)
-            # If the prey is in range, check if it is the closest till now
-            if in_range and (dist < closest_prey or closest_prey == -1):
-                prey_loc = p.reshape((1,2))[0]
-                closest_prey = dist
+        # # distance from the closest prey in range
+        # closest_prey = -1
+        # # Iterate over all prey
+        # for p in state_space['prey']:
+        #     # For each prey check if they are in range and get the distance
+        #     in_range, dist = is_close(state_space['poses'], self.index, p, self.sensing_radius)
+        #     # If the prey is in range, check if it is the closest till now
+        #     if in_range and (dist < closest_prey or closest_prey == -1):
+        #         prey_loc = p.reshape((1,2))[0]
+        #         closest_prey = dist
         
-        # if no prey found in range
-        if closest_prey == -1:
-            prey_loc = [-5,-5]
+        # # if no prey found in range
+        # if closest_prey == -1:
+        #     prey_loc = [-5,-5]
         
         if self.capability_aware:
-            observation = np.array([*state_space['poses'][:, self.index ][:2], *prey_loc, self.sensing_radius, self.capture_radius])
+            observation = np.array([*state_space['poses'][:, self.index ], self.sensing_radius, self.capture_radius])
         else:
-            observation = np.array([*state_space['poses'][:, self.index ][:2], *prey_loc, 0, 0])
+            observation = np.array([*state_space['poses'][:, self.index ], 0, 0])
         return observation
     
     def generate_goal(self, goal_pose, action, args):

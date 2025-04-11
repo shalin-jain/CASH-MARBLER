@@ -19,6 +19,7 @@ class PredatorCapturePrey(BaseEnv):
         self.num_robots = args.predator + args.capture
         self.agent_poses = None # robotarium convention poses
         self.prey_loc = None
+        self.prey_pose = None
 
         self.num_prey = args.num_prey
         self.num_predators = args.predator
@@ -33,7 +34,7 @@ class PredatorCapturePrey(BaseEnv):
         #     self.agent_obs_dim = 6
         # else:
         #     self.agent_obs_dim = 4
-        self.agent_obs_dim = 6
+        self.agent_obs_dim = 5
 
         #Initializes the agents
         self.agents = []
@@ -52,7 +53,7 @@ class PredatorCapturePrey(BaseEnv):
         for agent in self.agents:
             actions.append(spaces.Discrete(5))
             #Each agent's observation is a tuple of size self.agent_obs_dim
-            obs_dim = self.agent_obs_dim * (self.args.num_neighbors + 1)
+            obs_dim = self.agent_obs_dim * (self.args.num_neighbors + 1) + (3*self.num_prey)
             #The lowest any observation will be is -5 (prey loc when can't see one), the highest is 3 (largest reasonable radius an agent will have)
             observations.append(spaces.Box(low=-5, high=3, shape=(obs_dim,), dtype=np.float32))        
         self.action_space = spaces.Tuple(tuple(actions))
@@ -134,20 +135,21 @@ class PredatorCapturePrey(BaseEnv):
             self.agents.append( Agent(i + self.args.predator, 0, capture_radius, self.action_id2w, self.args.capability_aware) )  
         
         # Agent locations
-        width = self.args.ROBOT_INIT_RIGHT_THRESH - self.args.LEFT
+        width = self.args.RIGHT - self.args.LEFT
         height = self.args.DOWN - self.args.UP
-        self.agent_poses = generate_initial_locations(self.num_robots, width, height, self.args.ROBOT_INIT_RIGHT_THRESH, start_dist=self.args.start_dist)
+        self.agent_poses = generate_initial_locations(self.num_robots, width, height, width, start_dist=self.args.start_dist)
         
         # Prey locations and tracking
         width = self.args.RIGHT - self.args.PREY_INIT_LEFT_THRESH
-        self.prey_loc = generate_initial_locations(self.num_prey, width, height, self.args.ROBOT_INIT_RIGHT_THRESH, start_dist=self.args.step_dist, spawn_left=False)
+        self.prey_loc = generate_initial_locations(self.num_prey, width, height, width, start_dist=self.args.step_dist)
+        self.prey_pose = self.prey_loc.T
         self.prey_loc = self.prey_loc[:2].T
         self.prey_captured = [False] * self.num_prey
         self.prey_sensed = [False] * self.num_prey
         
         self.state_space = self._generate_state_space()
         self.env.reset()
-        return [[0]*(self.agent_obs_dim * (self.args.num_neighbors + 1))] * self.num_robots
+        return [[0]*(self.agent_obs_dim * (self.args.num_neighbors + 1) + (3*self.num_prey))] * self.num_robots
         
     def step(self, actions_):
         '''
@@ -166,25 +168,24 @@ class PredatorCapturePrey(BaseEnv):
         
         # get the observation and reward from the updated state
         obs     = self.get_observations(updated_state)
-        if return_message != '':
-            #print("Ending due to",return_message)
-            info['message'] = return_message
-            terminated =  True
-            rewards = -5
-        else:    
-            rewards = self.get_rewards(updated_state)
-
-            info['remaining'] = updated_state['num_prey']
-            
-            # condition for checking for the whether the episode is terminated
-            if self.episode_steps > self.args.max_episode_steps or \
-                updated_state['num_prey'] == 0:
-                terminated = True              
+        # if return_message != '':
+        #     #print("Ending due to",return_message)
+        #     info['message'] = return_message
+        #     terminated =  True
+        #     rewards = -5
+        # else:    
+        rewards = self.get_rewards(updated_state)
+        info['remaining'] = updated_state['num_prey']
+        
+        # condition for checking for the whether the episode is terminated
+        if self.episode_steps > self.args.max_episode_steps or \
+            updated_state['num_prey'] == 0:
+            terminated = True              
 
         info['dist_travelled'] = dist
         if terminated:
             info['pct_done'] = (self.num_prey - updated_state['num_prey']) / self.num_prey
-            print(f"Task Completion Percentage: {info['pct_done']}")
+            # print(f"Task Completion Percentage: {info['pct_done']}")
             pass
             # print(f"Remaining prey: {updated_state['num_prey']} {return_message}")
 
@@ -242,11 +243,13 @@ class PredatorCapturePrey(BaseEnv):
             for nbr in nbr_indices:
                 nbr_cap.extend(capabilities[nbr])
             cap = np.concatenate((cap, nbr_cap))
+
+            prey_pos = np.where(np.array(self.prey_sensed)[:, None], self.prey_pose, np.array([-5, -5, -5])[None, :])
             
             # full_observation[i] is of dimension [NUM_NBRS, OBS_DIM]
             for nbr_index in nbr_indices:
                 full_observations[i] = np.concatenate( (full_observations[i],observations[nbr_index]) )
-            full_observations[i] = np.concatenate( (full_observations[i], cap) )
+            full_observations[i] = np.concatenate( (full_observations[i], prey_pos.flatten(), cap) )
 
         # dimension [NUM_AGENTS, NUM_NBRS, OBS_DIM]
         return full_observations

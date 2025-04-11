@@ -166,14 +166,14 @@ class simple(BaseEnv):
         updated_state = self._generate_state_space()
         obs     = self.get_observations(updated_state)
 
-        if return_msg == '':
-            rewards = self.get_rewards(updated_state)
-            self.terminated = self.episode_steps > self.args.max_episode_steps 
-        else:
-            print("Ending due to", return_msg)
-            rewards = [-5]*self.num_robots
-            self.terminated = True
-            info['remaining'] = return_msg
+        # if return_msg == '':
+        rewards = self.get_rewards(updated_state)
+        self.terminated = self.episode_steps > self.args.max_episode_steps 
+        # else:
+        #     print("Ending due to", return_msg)
+        #     rewards = [-5]*self.num_robots
+        #     self.terminated = True
+        #     info['remaining'] = return_msg
                 
         if self.args.save_gif:
             info['frames'] = frames

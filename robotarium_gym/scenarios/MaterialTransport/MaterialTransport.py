@@ -54,7 +54,7 @@ class MaterialTransport(BaseEnv):
         # Calculate the updated observation dimension
         # ego_pos_x, ego_pos_y, other_agents_pos_x * (n_agents - 1), other_agents_pos_y * (n_agents - 1)
         # zone1_load, zone2_load, ego_torque, ego_speed, other_agents_torque * (n_agents - 1), other_agents_speed * (n_agents - 1)
-        self.agent_obs_dim = 2 + 2 * (self.args.num_neighbors) + 2 + 2 + 2 * (self.args.num_neighbors)
+        self.agent_obs_dim = 3 + 3 * (self.args.num_neighbors) + 2 + 2 + 2 * (self.args.num_neighbors)
 
         self.zone1_args = copy.deepcopy(self.args.zone1)
         del self.zone1_args['distribution']   
@@ -186,9 +186,9 @@ class MaterialTransport(BaseEnv):
             else:
                 nbr_indices = get_nearest_neighbors(self.agent_poses, ego_index, self.args.num_neighbors)
 
-            ego_pos = self.agent_poses[:, ego_index][:2]  # Ego position (x, y)
+            ego_pos = self.agent_poses[:, ego_index]  # Ego position (x, y)
             other_agents_pos = [
-                self.agent_poses[:, i][:2] - ego_pos for i in nbr_indices
+                self.agent_poses[:, i] for i in nbr_indices
             ]  # other agents' positions
             other_agents_pos_flat = [coord for pos in other_agents_pos for coord in pos]
 
